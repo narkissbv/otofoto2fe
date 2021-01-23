@@ -6,15 +6,16 @@
     </v-main>
     <v-snackbar
       v-model="snackbar"
+      :timeout="timeout"
     >
       {{ error }}
-
+      {{ message }}
       <template v-slot:action="{ attrs }">
         <v-btn
           color="primary"
           text
           v-bind="attrs"
-          @click="snackbar = false"
+          @click="sneakbarClose"
         >
           Close
         </v-btn>
@@ -41,7 +42,8 @@ export default {
     OfHeader
   },
   data: () => ({
-    snackbar: false
+    snackbar: false,
+    timeout: 5000,
   }),
   mounted() {
     this.$store.commit('account/setAuthUser', window.auth_user)
@@ -49,15 +51,29 @@ export default {
   computed: {
     ...mapGetters({
       isLoggedIn: 'account/isLoggedIn',
-      error: 'error'
+      error: 'error',
+      message: 'message'
     })
+  },
+  methods: {
+    sneakbarClose () {
+      this.snackbar = false
+      this.$store.commit('clearMessages', { root: true })
+    }
   },
   watch: {
     error(newValue, oldValue) {
       if (newValue && newValue != oldValue && newValue.length > 0) {
+        this.timeout = 5000
         this.snackbar = true
       }
-    }
+    },
+    message(newValue, oldValue) {
+      if (newValue && newValue != oldValue && newValue.length > 0) {
+        this.timeout = -1 // keep sneakbar open indefinitely
+        this.snackbar = true
+      }
+    },
   }
 }
 </script>

@@ -32,7 +32,7 @@
             ></v-divider>
             <v-spacer></v-spacer>
 
-            <!-- Add client dialog -->
+            <!-- Add / Edit client dialog -->
             <v-dialog
               v-model="dialog"
               max-width="500px"
@@ -71,7 +71,7 @@
                             v-model="editedItem.name"
                             label="Name"
                             counter="40"
-                            :rules=[validations.required]
+                            :rules="[validations.required]"
                           ></v-text-field>
                         </v-col>
                         <v-col
@@ -80,55 +80,70 @@
                         >
                           <v-text-field
                             v-model="editedItem.phone"
-                            :rules=[validations.required]
+                            :rules="[validations.required]"
                             type="tel"
                             label="Phone"
                           ></v-text-field>
                         </v-col>
                         <v-col
                           cols="12"
-                          sm="12"
+                          :sm="editedIndex != -1 ? 6 : 12"
                         >
                           <v-text-field
                             v-model="editedItem.email"
-                            :rules=[validations.email]
+                            :rules="[validations.email]"
                             type="email"
                             label="Email"
                           ></v-text-field>
                         </v-col>
+                        <v-col
+                          v-if="editedIndex != -1"
+                          cols="12"
+                          sm="6"
+                        >
+                          <v-text-field
+                            v-model="editedItem.password"
+                            :rules="[validations.password]"
+                            type="password"
+                            label="New password"
+                          ></v-text-field>
+                        </v-col>
+
                       </v-row>
                       <v-divider class="mb-5"/>
-                      <h3>Album information</h3>
-                      <v-row>
-                        <v-col
-                          cols="12"
-                          sm="7"
-                        >
-                          <v-text-field
-                            v-model="editedItem.albumName"
-                            label="Album name"
-                            counter="20"
-                            :rules="[validations.albumName, validations.required]"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="5"
-                        >
-                          <v-text-field
-                            v-model="editedItem.albumNumber"
-                            :rules="[validations.required, validations.positive]"
-                            type="number"
-                            label="Number of photos"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col>
-                          <v-checkbox
-                            v-model="editedItem.shareable"
-                            label="Enable album sharing"
-                          ></v-checkbox>
-                        </v-col>
-                      </v-row>
+                      <div class="album-details" v-if="editedIndex === -1">
+                        <h3>Album information</h3>
+                        <v-row>
+                          <v-col
+                            cols="12"
+                            sm="6"
+                          >
+                            <v-text-field
+                              v-model="editedItem.albumName"
+                              label="Album name"
+                              counter="20"
+                              :rules="[validations.albumName, validations.required]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="12"
+                            sm="5"
+                          >
+                            <v-text-field
+                              v-model="editedItem.albumNumber"
+                              :rules="[validations.required, validations.positive]"
+                              type="number"
+                              label="Number of photos"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col>
+                            <v-checkbox
+                              v-model="editedItem.shareable"
+                              label="Enable album sharing"
+                            ></v-checkbox>
+                          </v-col>
+                        </v-row>
+                      </div>
                     </v-container>
                   </v-card-text>
 
@@ -328,7 +343,8 @@ export default {
   methods: {
     ...mapActions({
       fetchClients: 'clients/fetchClients',
-      addClient: 'clients/addClient'
+      addClient: 'clients/addClient',
+      editClient: 'clients/editClient'
     }),
 
     initialize () {
@@ -372,8 +388,13 @@ export default {
     async save () {
       this.$refs.addClientForm.validate()
       if (this.addClientFormValid) {
-        await this.addClient(this.editedItem)
-        this.close()
+        if (this.editedIndex === -1) {
+          await this.addClient(this.editedItem)
+          this.close()
+        } else {
+          await this.editClient(this.editedItem)
+          this.close()
+        }
       }
     },
 

@@ -10,7 +10,8 @@ const validationMixin = {
       email: value => EMAIL_REGEX.test(value) || 'Please enter a valid email address',      
       required: value => !!value || 'Required.',
       albumName: value => NO_WHITESPACE.test(value) || 'English letters, numbers and no special characters',
-      positive: value => value >= 0 || 'Value should be positive number'
+      positive: value => value >= 0 || 'Value should be positive number',
+      password: value => !value || value?.length === 0 || value?.length >= 8 || 'Password too short. Use at least 8 characters'
     }
   })
 }

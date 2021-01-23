@@ -10,14 +10,13 @@ Vue.use(VueRouter)
 const guard = (to, from, next) => {
   // check for valid auth token
   axios.get('/api/otofoto2be/checkAuthToken.php').then(response => {
-    console.log(response.data)
     // save user data to the store (in case refresh will clear the store)
     const user = response?.data?.user || null
     store.commit('account/setAuthUser', user)
     // Token is valid, so continue
     next()
   }).catch(error => {
-    console.log(error.data)
+    console.error(error.data)
     // There was an error so redirect
     store.commit('account/logout')
     next({
@@ -34,14 +33,13 @@ const router = new VueRouter({
       path: '/logout',
       beforeEnter: (to, from, next) => {
         const url = '/api/otofoto2be/logout.php'
-        axios.get(url).then(resp => {
-          console.log(resp.data)
+        axios.get(url).then(() => {
           store.commit('account/logout')
           next({
             path: '/login'
           })
         }, (error) => {
-          console.log(error.data)
+          console.error(error.data)
         })
       }
     },
