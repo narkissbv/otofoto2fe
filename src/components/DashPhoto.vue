@@ -284,7 +284,7 @@ export default {
         {
           title: 'Albums',
           icon: 'mdi-image-album',
-          action: ''
+          action: (item) => this.navigateTo('albums', {id: item.id})
         },
         {
           title: 'Photos',
@@ -396,6 +396,10 @@ export default {
           this.close()
         }
       }
+    },
+
+    navigateTo (name, params) {
+      this.$router.push({ name, params})
     },
 
     myDebugger (something) {
