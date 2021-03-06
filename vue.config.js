@@ -9,7 +9,8 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {'^/api' : '/'}
       },
-    }
+    },
+    historyApiFallback: true,
   },
   runtimeCompiler: true
 }

@@ -1,11 +1,5 @@
 <template>
-  <v-container>
-    <v-layout>
-      <v-flex>
-        <component :is="dashboardComponent"/>
-      </v-flex>
-    </v-layout>
-  </v-container>  
+  <component :is="dashboardComponent"/>
 </template>
 
 <script>

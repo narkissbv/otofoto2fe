@@ -284,7 +284,10 @@ export default {
         {
           title: 'Albums',
           icon: 'mdi-image-album',
-          action: (item) => this.navigateTo('albums', {id: item.id})
+          action: (item) => this.navigateTo('albums', {
+            id: item.id,
+            name: item.name
+          })
         },
         {
           title: 'Photos',

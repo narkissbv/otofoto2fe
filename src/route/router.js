@@ -62,10 +62,10 @@ const router = new VueRouter({
         requiresAuth: true
       },
       component: Albums,
-      props: route => ({ clientId: route.params.id }),
-      // beforeEnter: (to, from, next) => {
-      //   verifyAuth(to, from, next)
-      // }
+      props: route => ({
+        clientId: route.params.id,
+        clientName: route.params.name
+      }),
     }
   ]
 })

@@ -25,6 +25,21 @@ export default {
         commit('setAlbums', response?.data?.albums)
       })
     },
+    addAlbum (context, payload) {
+      let formData = new FormData()
+      for (let key in payload) {
+        formData.append(key, payload[key])
+      }
+      let url = `${API_BASE_URL}/addAlbum.php`
+      axios.post(url, formData).then( (resp) => {
+        context.dispatch('fetchAlbums')
+        context.commit('setMessage',
+                        resp?.data?.message,
+                        { root: true })
+      }, error => {
+        context.commit('setErrorMessage', error?.response?.data?.message, { root: true })
+      })
+    },
   },
   getters: {
     list(state) {

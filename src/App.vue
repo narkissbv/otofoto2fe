@@ -2,7 +2,9 @@
   <v-app>
     <of-header/>
     <v-main>
-      <router-view></router-view>
+      <v-container>
+        <router-view></router-view>
+      </v-container>
     </v-main>
     <v-snackbar
       v-model="snackbar"
