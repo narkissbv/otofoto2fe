@@ -240,13 +240,13 @@ export default {
           title: 'Lock Album',
           icon: 'mdi-lock',
           action: '',
-          condition: {active: '1'}
+          condition: {active: true}
         },
         {
           title: 'Unlock Album',
           icon: 'mdi-lock-open',
           action: '',
-          condition: {active: '0'}
+          condition: {active: false}
         },
         {
           title: 'Delete',
