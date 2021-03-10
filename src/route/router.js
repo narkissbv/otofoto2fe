@@ -66,6 +66,11 @@ const router = new VueRouter({
         clientId: route.params.id,
         clientName: route.params.name
       }),
+    },
+    {
+      name: 'shared',
+      path: '/shared:slug',
+      component: Albums
     }
   ]
 })

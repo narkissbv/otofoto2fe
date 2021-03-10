@@ -82,7 +82,7 @@
                             label="Number of photos"
                           ></v-text-field>
                         </v-col>
-                        <v-col>
+                        <v-col v-if="editedIndex === -1">
                           <v-row>
                             <v-checkbox
                               v-model="editedItem.shareable"
@@ -137,6 +137,18 @@
         <template v-slot:[`item.share`]="{ item }">
           <a :href="getShareLink(item)" v-if="item.shareSlug">Share Link</a>
           <span v-else>No share</span>
+        </template>
+
+        <template v-slot:[`item.selected`]="{ item }">
+          <!-- <div class="progress-container">
+            <div class="progress" :style="`width: ${Math.floor(item.selected / item.photos)}%`"></div>
+          </div> -->
+          <v-progress-linear :value="Math.floor(item.selected / item.photos)"
+                             height="25"
+                             rounded
+          >
+            {{ `${item.selected} / ${item.photos}` }}
+          </v-progress-linear>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
@@ -210,6 +222,10 @@ export default {
           value: 'photos'
         },
         {
+          text: 'Progress',
+          value: 'selected'
+        },
+        {
           text: 'Share link',
           value: 'share'
         },
@@ -256,6 +272,22 @@ export default {
           condition: {active: false}
         },
         {
+          title: 'Share Album',
+          icon: 'mdi-share',
+          action: '',
+          condition: {shareSlug: null}
+        },
+        {
+          title: 'Remove Share',
+          icon: 'mdi-share-off',
+          action: (item) => this.removeShare({id: item.id}),
+          condition: {
+            key: 'shareSlug',
+            value: true,
+            comparison: 'truthy'
+          }
+        },
+        {
           title: 'Delete',
           icon: 'mdi-delete',
           action: this.deleteItem,
@@ -278,14 +310,24 @@ export default {
     },
     getShareLink () {
       return (item) => {
-        return `${window.location.origin}/${item.shareSlug}`
+        return `${window.location.origin}/shared/${item.shareSlug}`
       }
     },
     activeActions () {
       return item => {
         return this.actions.filter( action => {
-          return !action.condition ||
-                 (action.condition && item[Object.keys(action.condition)] === Object.values(action.condition)[0])
+          if (!action.condition) {
+            return true
+          } else {
+            if (action.condition.comparison) {
+              switch (action.condition.comparison) {
+                case 'truthy':
+                  return !!item[action.condition.key]
+              }
+            } else {
+              return action.condition && item[Object.keys(action.condition)] === Object.values(action.condition)[0]
+            }
+          }
         })
       }
     }
@@ -294,7 +336,8 @@ export default {
     ...mapActions({
       fetchAlbums: 'albums/fetchAlbums',
       addAlbum: 'albums/addAlbum',
-      editAlbum: 'albums/editAlbum'
+      editAlbum: 'albums/editAlbum',
+      removeShare: 'albums/removeShare',
     }),
     init () {
       this.fetchAlbums({clientId: this.clientId})
@@ -338,10 +381,10 @@ export default {
       this.$refs.addAlbumForm.validate()
       if (this.addAlbumFormValid) {
         if (this.editedIndex === -1) {
-          await this.addAlbum({...this.editedItem, client_id: this.clientId})
+          await this.addAlbum({...this.editedItem, clientId: this.clientId})
           this.close()
         } else {
-          await this.editAlbum(this.editedItem)
+          await this.editAlbum({...this.editedItem, clientId: this.clientId})
           this.close()
         }
       }
@@ -362,6 +405,12 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped lang="sass">
+  // .progress-container
+  //   width: 100%
+  //   border: 1px solid black
+  //   height: 10px
+  //   .progress
+  //     height: 100%
+  //     background-color: purple
 </style>
