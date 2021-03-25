@@ -76,7 +76,27 @@ export default {
       axios.post(url, formData).then( (resp) => {
         commit('setAlbum', resp.data.data)
       })
-    }
+    },
+    addShare ({ commit }, payload) {
+      let formData = new FormData()
+      for (let key in payload) {
+        formData.append(key, payload[key])
+      }
+      let url = `${API_BASE_URL}/addShare.php`
+      axios.post(url, formData).then( (resp) => {
+        commit('setAlbum', resp.data.data)
+      })
+    },
+    lockAlbum ({ commit }, payload) {
+      let formData = new FormData()
+      for (let key in payload) {
+        formData.append(key, payload[key])
+      }
+      let url = `${API_BASE_URL}/lockAlbum.php`
+      axios.post(url, formData).then( (resp) => {
+        commit('setAlbum', resp.data.data)
+      })
+    },
   },
   getters: {
     list(state) {

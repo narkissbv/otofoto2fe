@@ -140,9 +140,6 @@
         </template>
 
         <template v-slot:[`item.selected`]="{ item }">
-          <!-- <div class="progress-container">
-            <div class="progress" :style="`width: ${Math.floor(item.selected / item.photos)}%`"></div>
-          </div> -->
           <v-progress-linear :value="Math.floor(item.selected / item.photos)"
                              height="25"
                              rounded
@@ -164,7 +161,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon color="black">mdi-dots-vertical</v-icon>
+                  <v-icon color="purple">mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
 
@@ -262,7 +259,7 @@ export default {
         {
           title: 'Lock Album',
           icon: 'mdi-lock',
-          action: '',
+          action: (item) => this.lockAlbum({id: item.id}),
           condition: {active: true}
         },
         {
@@ -274,7 +271,7 @@ export default {
         {
           title: 'Share Album',
           icon: 'mdi-share',
-          action: '',
+          action: (item) => this.addShare({id: item.id}),
           condition: {shareSlug: null}
         },
         {
@@ -338,6 +335,8 @@ export default {
       addAlbum: 'albums/addAlbum',
       editAlbum: 'albums/editAlbum',
       removeShare: 'albums/removeShare',
+      addShare: 'albums/addShare',
+      lockAlbum: 'albums/lockAlbum',
     }),
     init () {
       this.fetchAlbums({clientId: this.clientId})
@@ -406,11 +405,5 @@ export default {
 </script>
 
 <style scoped lang="sass">
-  // .progress-container
-  //   width: 100%
-  //   border: 1px solid black
-  //   height: 10px
-  //   .progress
-  //     height: 100%
-  //     background-color: purple
+
 </style>

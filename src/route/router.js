@@ -84,8 +84,7 @@ router.beforeEach( (to, from, next) => {
       store.commit('account/setAuthUser', user)
       // Token is valid, so continue
       next()
-    }).catch(error => {
-      console.error(error.data)
+    }).catch( ()  => {
       // There was an error so redirect
       store.commit('account/logout')
       next({

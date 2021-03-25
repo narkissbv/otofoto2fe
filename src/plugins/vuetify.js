@@ -14,9 +14,13 @@ const vuetify = new Vuetify({
         error: colors.red.accent3,
       },
       dark: {
-        primary: colors.blue.lighten3,
+        primary: colors.purple.lighten2,
+        secondary: colors.grey.darken1,
+        accent: colors.shades.black,
+        error: colors.red.accent3,
       },
     },
+    dark: true
   },
 })
 

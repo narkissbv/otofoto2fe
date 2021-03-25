@@ -193,7 +193,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon color="black">mdi-dots-vertical</v-icon>
+                  <v-icon color="purple">mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
 
