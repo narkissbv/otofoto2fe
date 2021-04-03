@@ -265,7 +265,7 @@ export default {
         {
           title: 'Unlock Album',
           icon: 'mdi-lock-open',
-          action: '',
+          action: (item) => this.unlockAlbum({id: item.id}),
           condition: {active: false}
         },
         {
@@ -337,6 +337,9 @@ export default {
       removeShare: 'albums/removeShare',
       addShare: 'albums/addShare',
       lockAlbum: 'albums/lockAlbum',
+      unlockAlbum: 'albums/unlockAlbum',
+      deleteAlbum: 'albums/delete',
+      setMessage: 'setMessage'
     }),
     init () {
       this.fetchAlbums({clientId: this.clientId})
@@ -355,7 +358,10 @@ export default {
     },
 
     deleteItemConfirm () {
-      this.albums.splice(this.editedIndex, 1)
+      let album = this.albums.splice(this.editedIndex, 1)
+      this.deleteAlbum({id: album[0].id}).then( resp => {
+        this.setMessage(resp.data.message)
+      })
       this.closeDelete()
     },
 
