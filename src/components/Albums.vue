@@ -2,17 +2,30 @@
   <div>
     <v-card>
       <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
+
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" lg="3">
+            <v-select v-model="albumsFilter"
+                      label="Filter albums"
+                      hide-details
+                      :items="albumsFilters"
+            ></v-select>
+          </v-col>
+        </v-row>
+
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="albums"
+        :items="filteredAlbums"
         :search="search"
         :items-per-page="20"
         :footer-props="{
@@ -203,6 +216,23 @@ export default {
   data () {
     return {
       search: '',
+      albumsFilter: {
+        text: 'Active', value: 'active',
+      },
+      albumsFilters: [
+        {
+          text: 'Active',
+          value: 'active',
+        },
+        {
+          text: 'Deleted',
+          value: 'deleted',
+        },
+        {
+          text: 'All',
+          value: 'all',
+        },
+      ],
       headers: [
         {
           text: 'ID',
@@ -288,7 +318,15 @@ export default {
           title: 'Delete',
           icon: 'mdi-delete',
           action: this.deleteItem,
+          condition: { active: true },
           color: 'error'
+        },
+        {
+          title: 'Restore',
+          icon: 'mdi-recycle',
+          action: (item) => this.restore({albumId: item.id}),
+          condition: { active: false },
+          color: 'primary'
         },
       ],
       addAlbumFormValid: false
@@ -327,6 +365,21 @@ export default {
           }
         })
       }
+    },
+    filteredAlbums () {
+      switch (this.albumsFilter) {
+        case 'active':
+          return this.albums.filter (album => {
+            return album.active
+          })
+        case 'deleted':
+          return this.albums.filter (album => {
+            return !album.active
+          })
+        case 'all':
+        default:
+          return this.albums
+      }
     }
   },
   methods: {
@@ -335,6 +388,7 @@ export default {
       addAlbum: 'albums/addAlbum',
       editAlbum: 'albums/editAlbum',
       removeShare: 'albums/removeShare',
+      restore: 'albums/restore',
       addShare: 'albums/addShare',
       lockAlbum: 'albums/lockAlbum',
       unlockAlbum: 'albums/unlockAlbum',

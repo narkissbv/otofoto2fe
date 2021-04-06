@@ -297,7 +297,10 @@ export default {
         {
           title: 'Upload',
           icon: 'mdi-file-upload',
-          action: ''
+          action: (item) => this.navigateTo('upload', {
+            id: item.id,
+            name: item.name,
+          })
         },
         {
           title: 'View As',

@@ -4,6 +4,8 @@ import axios from 'axios'
 import Login from '@/components/LoginPage'
 import Dashboard from '@/components/Dashboard'
 import Albums from '@/components/Albums'
+import Upload from '@/components/Upload'
+
 import store from '@/store/store'
 
 Vue.use(VueRouter)
@@ -71,6 +73,18 @@ const router = new VueRouter({
       name: 'shared',
       path: '/shared:slug',
       component: Albums
+    },
+    {
+      name: 'upload',
+      path: '/upload/:id',
+      meta: {
+        requiresAuth: true
+      },
+      component: Upload,
+      props: route => ({
+        clientId: route.params.id,
+        clientName: route.params.name
+      })
     }
   ]
 })
