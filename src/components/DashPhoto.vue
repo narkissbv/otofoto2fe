@@ -292,7 +292,10 @@ export default {
         {
           title: 'Photos',
           icon: 'mdi-image-multiple',
-          action: ''
+          action: (item) => this.navigateTo('photos', {
+            id: item.id,
+            name: item.name
+          })
         },
         {
           title: 'Upload',

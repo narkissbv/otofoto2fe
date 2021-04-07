@@ -5,6 +5,7 @@ import Login from '@/components/LoginPage'
 import Dashboard from '@/components/Dashboard'
 import Albums from '@/components/Albums'
 import Upload from '@/components/Upload'
+import Photos from '@/components/Photos'
 
 import store from '@/store/store'
 
@@ -81,6 +82,18 @@ const router = new VueRouter({
         requiresAuth: true
       },
       component: Upload,
+      props: route => ({
+        clientId: route.params.id,
+        clientName: route.params.name
+      })
+    },
+    {
+      name: 'photos',
+      path: '/photos/:id',
+      meta: {
+        requiresAuth: true,
+      },
+      component: Photos,
       props: route => ({
         clientId: route.params.id,
         clientName: route.params.name

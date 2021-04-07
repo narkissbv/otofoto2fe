@@ -5,7 +5,9 @@
       dark
     >
       <v-layout justify-space-between align-center>
-        <v-flex shrink>
+        <v-flex shrink
+                class="logo"
+                @click="$router.push('/dashboard')">
           <v-img
             alt="otoFoto Logo"
             contain
@@ -31,3 +33,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+  .logo {
+    cursor: pointer;
+  }
+</style>

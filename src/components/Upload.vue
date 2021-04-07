@@ -4,16 +4,6 @@
       <v-card-title>
         Upload photos to {{ clientName || 'client' }}
       </v-card-title>
-      <!-- <v-file-input
-        v-model="files"
-        counter
-        multiple
-        show-size
-        prepend-icon="mdi-camera"
-        accept="image/*"
-        label="Upload photos"
-      ></v-file-input>
-      <v-btn color="primary" @click="uploadPhotos">Upload</v-btn> -->
       <vue-dropzone ref="myVueDropzone"
                     id="dropzone"
                     @vdropzone-sending="sendingEvent"
@@ -36,7 +26,7 @@ export default {
           url: `${API_BASE_URL}/upload.php`,
           thumbnailWidth: 150,
           maxFilesize: 1.5,
-          acceptedFiles: 'image/*',
+          acceptedFiles: 'image/jpeg',
           headers: { "My-Awesome-Header": "header value" }
       }
     }
@@ -49,21 +39,6 @@ export default {
     'clientName'
   ],
   methods: {
-    // uploadPhotos () {
-    //   if (this.files) {
-    //     let formData = new FormData()
-
-    //     // files
-    //     for (let file of this.files) {
-    //       formData.append("files", file, file.name)
-    //     }
-
-    //     formData.append("clientId", this.clientId)
-    //     axios.post(`${API_BASE_URL}/upload`, formData).then(resp => {
-    //       console.log(resp)
-    //     })
-    //   }
-    // }
     sendingEvent(file, xhr, formData) {
       formData.append('clientId', this.clientId)
     }

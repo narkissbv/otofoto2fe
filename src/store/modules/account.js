@@ -1,7 +1,6 @@
 import axios from 'axios'
 import router from '@/route/router'
-
-const API_BASE_URL = '/api/otofoto2be'
+import { API_BASE_URL } from '@/utils/utils'
 
 export default {
   namespaced: true,
