@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card class="pa-4">
+    <back-btn/>
       <v-card-title>
         Upload photos to {{ clientName || 'client' }}
       </v-card-title>
@@ -18,6 +19,7 @@
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import { API_BASE_URL } from '../utils/utils'
+import BackBtn from './backBtn.vue'
 export default {
   data () {
     return {
@@ -32,7 +34,8 @@ export default {
     }
   },
   components: {
-    VueDropzone: vue2Dropzone
+    VueDropzone: vue2Dropzone,
+    BackBtn
   },
   props: [
     'clientId',

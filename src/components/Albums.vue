@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-card>
+      <back-btn/>
       <v-card-title>
-
         <v-row>
           <v-col>
             <v-text-field
@@ -211,7 +211,9 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import validationMixin from './../mixins/validations'
+import backBtn from './backBtn'
 export default {
+  components: { backBtn },
   mixins: [validationMixin],
   data () {
     return {

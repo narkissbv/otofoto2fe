@@ -185,7 +185,7 @@
             <v-menu
               bottom
               left
-            >
+            >git 
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   dark
@@ -260,17 +260,21 @@ export default {
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
+        id: null,
         name: '',
         email: '',
         phone: '',
         albumName: '',
         albumNumber: null,
+        password: '',
         shareable: false
       },
       defaultItem: {
+        id: null,
         name: '',
         email: '',
         phone: '',
+        password: '',
         albumName: '',
         albumNumber: null,
         shareable: false

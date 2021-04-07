@@ -4,9 +4,9 @@
       color="primary"
       dark
     >
-      <v-layout justify-space-between align-center>
-        <v-flex shrink
-                class="logo"
+      <v-row dense justify-space-between align-center>
+        <v-col class="shrink logo"
+                
                 @click="$router.push('/dashboard')">
           <v-img
             alt="otoFoto Logo"
@@ -14,22 +14,57 @@
             src="@/assets/of-logo-full.png"
             transition="scale-transition"
           />
-        </v-flex>
-        <v-flex shrink>Hello {{ name }}</v-flex>
-      </v-layout>
+        </v-col>
+        <v-col align-self="center">Hello {{ name }}</v-col>
+        <v-col align-self="center" class="shrink">
+          <v-menu top
+                  :close-on-content-click="false"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon
+                     v-bind="attrs"
+                     v-on="on">
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item>
+                <v-list-item-title>
+                  <v-switch v-model="$vuetify.theme.dark"
+                            label="Dark theme"
+                  ></v-switch>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item v-if="isLoggedin"
+                           @click="logout">
+                <v-list-item-title>
+                  <v-icon>mdi-power</v-icon>
+                  Logout
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+      </v-row>
     </v-app-bar>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      user: 'account/user'
+      user: 'account/user',
+      isLoggedin: 'account/isLoggedIn'
     }),
     name () {
       return this.user?.name || 'Guest'
     }
+  },
+  methods: {
+    ...mapActions({
+      logout: 'account/logout'
+    })
   }
 }
 </script>

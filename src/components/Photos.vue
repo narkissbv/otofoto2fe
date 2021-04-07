@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card class="pa-4">
+      <back-btn/>
       <v-card-title>
         {{ clientName || 'Client' }}'s photos
       </v-card-title>
@@ -9,14 +10,20 @@
              v-for="photo in photos"
              :key="photo.id"
              class="image-container">
-          <img :src="getImageSrc(photo.thumb)"/>
-          <div class="controls">
-            <div class="controls-placer">
-              <v-icon @click="deletePhoto({photoId: photo.id})"
-                      large
-                      color="error">mdi-delete</v-icon>
-            </div>
-          </div>
+          <v-card height="100%"
+                  outlined
+                  color=""
+          >
+            <img :src="getImageSrc(photo.thumb)"/>
+            <v-divider class="my-4 mx-4"></v-divider>
+            <v-row class="data mx-4 mb-4 justify-space-between">
+              <v-col class="">{{ photo.filename }}</v-col>
+              <v-col class="shrink">
+                <v-icon @click="deletePhoto({photoId: photo.id})"
+                        color="error">mdi-delete</v-icon>
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
       </v-row>
     </v-card>
@@ -24,12 +31,16 @@
 </template>
 
 <script>
+import BackBtn from './backBtn'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
 
     }
+  },
+  components: {
+    BackBtn,
   },
   computed: {
     ...mapGetters({
@@ -39,7 +50,7 @@ export default {
       return (url) => {
         return window.location.hostname === 'localhost' ?
         `http://localhost/otofoto2be/${url}` :
-        url
+        `${window.location.origin}/${url}`
       }
     }
   },
@@ -72,19 +83,6 @@ export default {
     position: relative;
     img {
       width: 100%
-    }
-    .controls {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      display: none;
-      .controls-placer {
-        position: absolute;
-        top: 5%;
-        right: 5%;
-      }
     }
   }
   .image-container:hover .controls {

@@ -6,17 +6,16 @@ export default {
   namespaced: true,
 
   state: {
-    user: null
+    user: null,
   },
   mutations: {
     setAuthUser(state, user) {
       state.user = user || null;
     },
-    setErrorMessage(state, error) {
-      state.error = error
-    },
+    // setErrorMessage(state, error) {
+    //   state.error = error
+    // },
     logout(state) {
-      state.error = null
       state.user = null
     }
   },
@@ -40,6 +39,15 @@ export default {
         commit('setErrorMessage', null, { root: true })
         router.push('/dashboard')
       }, (error) => {
+        commit('setErrorMessage', error?.response?.data?.message, { root: true })
+      })
+    },
+    logout({ commit }) {
+      const url = `${API_BASE_URL}/logout.php`
+      axios.get(url).then(() => {
+        router.push({name: 'login'})
+        commit('logout')
+      }, error => {
         commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
     },
