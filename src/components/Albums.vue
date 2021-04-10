@@ -307,7 +307,7 @@ export default {
           icon: 'mdi-image-multiple',
           action: (item) => {
            this.$router.push({ name: 'photos', params: {
-             id: item.id,
+             id: this.clientId,
              name: item.description
            }}) 
           }
