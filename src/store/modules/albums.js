@@ -120,19 +120,19 @@ export default {
       let url = `${API_BASE_URL}/deleteAlbum.php`
       return axios.post(url, formData)
     },
-    restore (context, payload) {
+    restore ({ commit }, payload) {
       let formData = new FormData()
       for (let key in payload) {
         formData.append(key, payload[key])
       }
       let url = `${API_BASE_URL}/restoreAlbum.php`
       axios.post(url, formData).then( (resp) => {
-        context.dispatch('fetchAlbums', {clientId: payload.clientId})
-        context.commit('setMessage',
+        commit('setMessage',
                         resp?.data?.message,
                         { root: true })
+        commit('setAlbum', resp.data.data)
       }, error => {
-        context.commit('setErrorMessage', error?.response?.data?.message, { root: true })
+        commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
     }
   },

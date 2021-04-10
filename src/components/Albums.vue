@@ -4,7 +4,7 @@
       <back-btn/>
       <v-card-title>
         <v-row>
-          <v-col>
+          <v-col cols="12" md="4">
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -13,11 +13,18 @@
               hide-details
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6" lg="3">
-            <v-select v-model="albumsFilter"
+          <v-col cols="12" sm="6" md="4">
+            <v-select v-model="filterLocked"
                       label="Filter albums"
                       hide-details
-                      :items="albumsFilters"
+                      :items="lockedFilters"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" sm="6" md="4">
+            <v-select v-model="filterActive"
+                      label="Filter albums"
+                      hide-details
+                      :items="activeFilters"
             ></v-select>
           </v-col>
         </v-row>
@@ -218,10 +225,27 @@ export default {
   data () {
     return {
       search: '',
-      albumsFilter: {
-        text: 'Active', value: 'active',
+      filterLocked: {
+        text: 'Unlocked', value: 'unlocked',
       },
-      albumsFilters: [
+      filterActive: {
+        text: 'Active', value: 'active'
+      },
+      lockedFilters: [
+        {
+          text: 'Unlocked',
+          value: 'unlocked',
+        },
+        {
+          text: 'Locked',
+          value: 'locked',
+        },
+        {
+          text: 'All',
+          value: 'all',
+        },
+      ],
+      activeFilters: [
         {
           text: 'Active',
           value: 'active',
@@ -320,14 +344,14 @@ export default {
           title: 'Delete',
           icon: 'mdi-delete',
           action: this.deleteItem,
-          condition: { active: true },
+          condition: { deleted: false },
           color: 'error'
         },
         {
           title: 'Restore',
           icon: 'mdi-recycle',
           action: (item) => this.restore({albumId: item.id}),
-          condition: { active: false },
+          condition: { deleted: true },
           color: 'primary'
         },
       ],
@@ -369,18 +393,35 @@ export default {
       }
     },
     filteredAlbums () {
-      switch (this.albumsFilter) {
+      let filter = []
+      switch (this.filterActive) {
         case 'active':
-          return this.albums.filter (album => {
-            return album.active
+          filter = this.albums.filter (album => {
+            return !album.deleted
           })
+          break
         case 'deleted':
-          return this.albums.filter (album => {
+          filter = this.albums.filter (album => {
+            return album.deleted
+          })
+          break
+        case 'all':
+        default:
+          filter = this.albums
+          break
+      }
+      switch (this.filterLocked) {
+        case 'locked':
+          return filter.filter ( album => {
             return !album.active
+          })
+        case 'unlocked':
+          return filter.filter ( album => {
+            return album.avtive
           })
         case 'all':
         default:
-          return this.albums
+          return filter
       }
     }
   },
@@ -417,6 +458,7 @@ export default {
       let album = this.albums.splice(this.editedIndex, 1)
       this.deleteAlbum({id: album[0].id}).then( resp => {
         this.setMessage(resp.data.message)
+        this.fetchAlbums({clientId: this.clientId})
       })
       this.closeDelete()
     },
