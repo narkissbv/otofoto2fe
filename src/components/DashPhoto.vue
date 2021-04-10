@@ -185,7 +185,7 @@
             <v-menu
               bottom
               left
-            >git 
+            >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   dark
