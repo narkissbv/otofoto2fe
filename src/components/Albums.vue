@@ -417,7 +417,7 @@ export default {
           })
         case 'unlocked':
           return filter.filter ( album => {
-            return album.avtive
+            return album.active
           })
         case 'all':
         default:
