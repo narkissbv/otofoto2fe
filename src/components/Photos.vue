@@ -65,15 +65,23 @@ export default {
       })
     },
     init () {
-      this.fetchPhotos({clientId: this.clientId})
+      // TODO: fetch by client or by album (type prop)
+      switch (this.type) {
+        case 'client':
+          this.fetchPhotos({clientId: this.id})
+          break
+        case 'album':
+          this.fetchPhotos({albumId: this.id})
+      }
     },
   },
   created () {
     this.init()
   },
   props: [
-    'clientId',
-    'clientName'
+    'id',
+    'clientName',
+    'type',
   ],
 }
 </script>

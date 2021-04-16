@@ -10,14 +10,18 @@ const vuetify = new Vuetify({
       light: {
         primary: colors.purple.lighten3,
         secondary: colors.grey.darken1,
-        accent: colors.shades.black,
+        accent: colors.purple.lighten5,
         error: colors.red.accent3,
+        warning: colors.pink.lighten5,
+        info: '#f4e7ff'
       },
       dark: {
         primary: colors.purple.lighten2,
         secondary: colors.grey.darken1,
-        accent: colors.shades.black,
-        error: colors.red.accent3,
+        accent: colors.purple.darken4,
+        error: colors.red.accent1,
+        warning: '#421b30',
+        info: '#4d3452'
       },
     },
     dark: true

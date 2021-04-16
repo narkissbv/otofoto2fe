@@ -64,8 +64,9 @@ const router = new VueRouter({
       },
       component: Photos,
       props: route => ({
-        clientId: route.params.id,
-        clientName: route.params.name
+        id: route.params.id,
+        clientName: route.params.name,
+        type: route.params.type,
       })
     }
   ]

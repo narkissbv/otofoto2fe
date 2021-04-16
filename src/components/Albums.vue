@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>
+    <v-card class="pa-4">
       <back-btn/>
       <v-card-title>
         <v-row>
@@ -15,14 +15,14 @@
           </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select v-model="filterLocked"
-                      label="Filter albums"
+                      label="Locked albums"
                       hide-details
                       :items="lockedFilters"
             ></v-select>
           </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select v-model="filterActive"
-                      label="Filter albums"
+                      label="Active albums"
                       hide-details
                       :items="activeFilters"
             ></v-select>
@@ -35,6 +35,7 @@
         :items="filteredAlbums"
         :search="search"
         :items-per-page="20"
+        :item-class="rowClass"
         :footer-props="{
           'items-per-page-options': [20, 50, 100]
         }"
@@ -307,8 +308,9 @@ export default {
           icon: 'mdi-image-multiple',
           action: (item) => {
            this.$router.push({ name: 'photos', params: {
-             id: this.clientId,
-             name: item.description
+             id: item.id,
+             name: item.description,
+             type: 'album',
            }}) 
           }
         },
@@ -423,6 +425,13 @@ export default {
         default:
           return filter
       }
+    },
+    rowClass () {
+      return item => {
+        if (item.deleted) return 'warning'
+        else if (!item.active) return 'info'
+        else return ''
+      }
     }
   },
   methods: {
@@ -508,6 +517,6 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 
 </style>

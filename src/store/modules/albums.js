@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { API_BASE_URL } from '@/utils/utils'
+import { sendAPI } from '@/utils/utils'
 
 export default {
   namespaced: true,
@@ -34,13 +33,8 @@ export default {
   actions: {
     // payload expected to be {clientId: Number}
     fetchAlbums ({ commit }, payload) {
-      let url = `${API_BASE_URL}/getAlbums.php`
-      
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      axios.post(url, formData).then(response => {
+      let url = 'getAlbums'
+      sendAPI(url, payload).then(response => {
         commit('setAlbums', response?.data?.albums)
       })
     },
@@ -54,12 +48,8 @@ export default {
      }
     */
     addAlbum (context, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/addAlbum.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `addAlbum`
+      sendAPI(url, payload).then( (resp) => {
         context.dispatch('fetchAlbums', {clientId: payload.clientId})
         context.commit('setMessage',
                         resp?.data?.message,
@@ -73,60 +63,40 @@ export default {
       console.log(context, payload)
     },
     removeShare ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/removeShare.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `removeShare`
+      sendAPI(url, payload).then( (resp) => {
         commit('setAlbum', resp.data.data)
+        commit('setMessage', resp.data.message, {root: true})
       })
     },
     addShare ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/addShare.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `addShare`
+      sendAPI(url, payload).then( (resp) => {
         commit('setAlbum', resp.data.data)
+        commit('setMessage', resp.data.message, {root: true})
       })
     },
     lockAlbum ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/lockAlbum.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `lockAlbum`
+      sendAPI(url, payload).then( (resp) => {
         commit('setAlbum', resp.data.data)
+        commit('setMessage', resp.data.message, {root: true})
       })
     },
     unlockAlbum ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/unlockAlbum.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `unlockAlbum`
+      sendAPI(url, payload).then( (resp) => {
         commit('setAlbum', resp.data.data)
+        commit('setMessage', resp.data.message, {root: true})
       })
     },
     delete ( context , payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/deleteAlbum.php`
-      return axios.post(url, formData)
+      let url = `deleteAlbum`
+      return sendAPI(url, payload)
     },
     restore ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/restoreAlbum.php`
-      axios.post(url, formData).then( (resp) => {
+      let url = `restoreAlbum`
+      sendAPI(url, payload).then( (resp) => {
         commit('setMessage',
                         resp?.data?.message,
                         { root: true })

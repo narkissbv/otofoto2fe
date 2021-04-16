@@ -1,14 +1,18 @@
 <template>
   <div>
-    <v-card>
+    <v-card class="pa-4">
       <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-row class="justify-end">
+          <v-col cols="12" md="6" lg="4" xl="3">
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -298,7 +302,8 @@ export default {
           icon: 'mdi-image-multiple',
           action: (item) => this.navigateTo('photos', {
             id: item.id,
-            name: item.name
+            name: item.name,
+            type: 'client',
           })
         },
         {
