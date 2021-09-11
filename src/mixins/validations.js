@@ -11,7 +11,8 @@ const validationMixin = {
       required: value => !!value || 'Required.',
       albumName: value => NO_WHITESPACE.test(value) || 'English letters, numbers and no special characters',
       positive: value => value >= 0 || 'Value should be positive number',
-      password: value => !value || value?.length === 0 || value?.length >= 8 || 'Password too short. Use at least 8 characters'
+      password: value => !value || value?.length === 0 || value?.length >= 8 || 'Password too short. Use at least 8 characters',
+      username: value => !value || value?.length === 0 || value?.length >= 4 || 'Username too short. Use at least 4 characters'
     }
   })
 }

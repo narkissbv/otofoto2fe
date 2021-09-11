@@ -57,6 +57,20 @@ export default {
     },
     setErrorMessage ({ commit }, state) {
       commit('setErrorMessage', state, { root: true })
+    },
+    signup({ commit }, payload) {
+      const url = API_BASE_URL + '/signup.php'
+      let formData = new FormData()
+      for (let key in payload) {
+        formData.append(key, payload[key])
+      }
+      axios.post(url, formData).then(response => {
+        commit('setAuthUser', response?.data?.user)
+        commit('setErrorMessage', null, { root: true })
+        router.push('/dashboard')
+      }, (error) => {
+        commit('setErrorMessage', error?.response?.data?.message, { root: true })
+      })
     }
   }
 }

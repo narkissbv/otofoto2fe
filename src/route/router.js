@@ -6,6 +6,7 @@ import Dashboard from '@/components/Dashboard'
 import Albums from '@/components/Albums'
 import Upload from '@/components/Upload'
 import Photos from '@/components/Photos'
+import Signup from '@/components/Signup'
 
 import store from '@/store/store'
 
@@ -18,6 +19,11 @@ const router = new VueRouter({
       name: 'login',
       path: '/login',
       component: Login
+    },
+    {
+      name: 'signup',
+      path: '/signup',
+      component: Signup
     },
     {
       name: 'dashboard',

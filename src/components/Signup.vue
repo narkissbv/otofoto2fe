@@ -1,13 +1,24 @@
 <template>
   <v-container class="intro">
     <v-card class="pa-8">
-      <h1>Welcome back to otoFoto</h1>
-      <h3>Sign in to the system to start your work</h3>
+      <h1>Welcome to otoFoto</h1>
+      <h3>Sign up to the system to start your work</h3>
+
       <v-form v-model="valid"
-              ref="loginForm"
-              @submit="doLogin">
-        <v-row wrap>
-          <v-col cols="12">
+              ref="signupForm"
+              @submit="doSignup">
+        <v-row>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="name"
+              required
+              :rules="[validations.required]"
+              label="Full name"
+              prepend-icon="mdi-account-circle">
+              Full Name
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="username"
               required
@@ -16,7 +27,7 @@
               prepend-icon="mdi-account">
             </v-text-field>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="password"
               required
@@ -27,12 +38,22 @@
               Password
             </v-text-field>
           </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="password"
+              required
+              :rules="[validations.email]"
+              label="Email"
+              prepend-icon="mdi-email">
+              Email
+            </v-text-field>
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
             <v-btn color="primary"
                   type="submit">
-              Login
+              Sign up
             </v-btn>
           </v-col>
         </v-row>
@@ -42,7 +63,7 @@
           <router-link to="/resetpassword">Forgot password</router-link>
         </v-col>
         <v-col>
-          <router-link to="/signup">Sign up</router-link>
+          <router-link to="/login">Log in</router-link>
         </v-col>
       </v-row>
     </v-card>
@@ -57,25 +78,27 @@ export default {
   mixins: [validationMixin],
   data () {
     return {
-      username: '',
-      password: '',
       valid: false,
+      name: null,
+      username: null,
+      password: null,
+      email: null
     }
   },
   methods: {
     ...mapActions({
-      login: 'account/login'
+      signup: 'account/signup'
     }),
-    doLogin () {
-      this.$refs.loginForm.validate()
+    doSignup () {
+      this.$refs.signupForm.validate()
       if (this.valid) {
-        this.login({ username: this.username, password: this.password })
+        this.signup({ username: this.username, password: this.password })
       }
     }
-  },
+  }
 }
 </script>
 
-<style scoped lang="stylus">
+<style>
 
 </style>
