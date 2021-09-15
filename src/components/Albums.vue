@@ -3,29 +3,33 @@
     <v-card class="pa-4">
       <back-btn/>
       <v-card-title>
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-select v-model="filterLocked"
-                      label="Locked albums"
-                      hide-details
-                      :items="lockedFilters"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-select v-model="filterActive"
-                      label="Active albums"
-                      hide-details
-                      :items="activeFilters"
-            ></v-select>
+        <v-row justify="end">
+          <v-col cols="12" md="6" xl="4">
+            <v-row>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-select v-model="filterLocked"
+                          label="Locked albums"
+                          hide-details
+                          :items="lockedFilters"
+                ></v-select>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-select v-model="filterActive"
+                          label="Active albums"
+                          hide-details
+                          :items="activeFilters"
+                ></v-select>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
 
@@ -182,7 +186,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon color="purple">mdi-dots-vertical</v-icon>
+                  <v-icon color="primary">mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
 
@@ -226,12 +230,8 @@ export default {
   data () {
     return {
       search: '',
-      filterLocked: {
-        text: 'Unlocked', value: 'unlocked',
-      },
-      filterActive: {
-        text: 'Active', value: 'active'
-      },
+      filterLocked: 'unlocked',
+      filterActive: 'active',
       lockedFilters: [
         {
           text: 'Unlocked',

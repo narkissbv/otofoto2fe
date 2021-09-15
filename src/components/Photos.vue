@@ -9,12 +9,12 @@
         <v-col cols="12" sm="6" md="4" lg="3"
              v-for="photo in photos"
              :key="photo.id"
-             class="image-container">
-          <v-card height="100%"
-                  outlined
-                  color=""
-          >
-            <img :src="getImageSrc(photo.thumb)"/>
+             class="">
+          <v-card outlined>
+            <div :style="`background-image: url(${getImageSrc(photo.thumb)}`"
+                 class="image-container">
+            </div>
+            <!-- <img :src="getImageSrc(photo.thumb)"/> -->
             <v-divider class="my-4 mx-4"></v-divider>
             <v-row class="data mx-4 mb-4 justify-space-between">
               <v-col class="">{{ photo.filename }}</v-col>
@@ -88,12 +88,14 @@ export default {
 
 <style scoped lang="scss">
   .image-container {
-    position: relative;
-    img {
-      width: 100%
+    height: calc(60vh);
+    background-size: cover;
+    background-position: center;
+    @media #{map-get($display-breakpoints, 'sm-and-up')} {
+      height: 300px;
     }
-  }
-  .image-container:hover .controls {
-    display: block;
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      height: 400px;
+    }
   }
 </style>

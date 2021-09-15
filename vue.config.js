@@ -12,5 +12,5 @@ module.exports = {
     },
     historyApiFallback: true,
   },
-  runtimeCompiler: true
+  runtimeCompiler: true,
 }

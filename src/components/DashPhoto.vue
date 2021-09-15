@@ -3,20 +3,31 @@
     <v-card class="pa-4">
       <v-card-title>
         <v-row class="justify-end">
-          <v-col cols="12" md="6" lg="4" xl="3">
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
+          <v-col cols="12" md="6" lg="5" xl="4">
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select v-model="filterActive"
+                          label="Active clients"
+                          hide-details
+                          :items="activeFilters"
+                ></v-select>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="clients"
+        :items="filteredClients"
         :search="search"
         :items-per-page="20"
         :footer-props="{
@@ -196,7 +207,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon color="purple">mdi-dots-vertical</v-icon>
+                  <v-icon color="primary">mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
 
@@ -257,6 +268,21 @@ export default {
           value: 'actions',
           sortable: false,
         }
+      ],
+      filterActive: 'active',
+      activeFilters: [
+        {
+          text: 'Active',
+          value: 'active',
+        },
+        {
+          text: 'Deleted',
+          value: 'deleted',
+        },
+        {
+          text: 'All',
+          value: 'all',
+        },
       ],
       search: '',
       dialog: false,
@@ -341,6 +367,26 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'New Client' : 'Edit Client'
     },
+    filteredClients () {
+      let filter = []
+      switch (this.filterActive) {
+        case 'active':
+          filter = this.clients.filter (client => {
+            return !client.archived
+          })
+          break
+        case 'deleted':
+          filter = this.clients.filter (client => {
+            return client.archived
+          })
+          break
+        case 'all':
+        default:
+          filter = this.clients
+          break
+      }
+      return filter
+    }
   },
 
   watch: {
