@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { API_BASE_URL } from '@/utils/utils'
+import { sendAPI } from '@/utils/utils'
 
 export default {
   namespaced: true,
@@ -15,25 +14,32 @@ export default {
   actions: {
     // payload expected to be {clientId: Number}
     fetchPhotos ({ commit }, payload) {
-      let url = `${API_BASE_URL}/getPhotos.php`
-      
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      axios.post(url, formData).then(response => {
+      let p = sendAPI('getPhotos', payload)
+      p.then(response => {
         commit('setPhotos', response?.data?.data)
       })
+      return p
+    },
+    // payload expected to be {photoId: Number}
+    select (context, payload) {
+      payload.action = 'add'
+      return sendAPI('setPhotoSelection', payload)
+    },
+    // payload expected to be {photoId: Number}
+    unselect (context, payload) {
+      payload.action = 'remove'
+      return sendAPI('setPhotoSelection', payload)
     },
     // payload expected to be {photoId: Number}
     delete (context, payload) {
-      let url = `${API_BASE_URL}/deletePhoto.php`
+      // let url = `${API_BASE_URL}/deletePhoto.php`
       
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      return axios.post(url, formData)
+      // let formData = new FormData()
+      // for (let key in payload) {
+      //   formData.append(key, payload[key])
+      // }
+      // return axios.post(url, formData)
+      return sendAPI('deletePhoto', payload)
     }
   },
   getters: {

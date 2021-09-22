@@ -51,11 +51,19 @@ export default {
       }, error => {
         commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
-    }
+    },
   },
   getters: {
     list(state) {
       return state.clients || null
     },
+    getClient: (state) => {
+      (clientId) => {
+        let client = state.clients.filter( c => {
+          return clientId == c.id
+        })
+        return client.length ? client[0] : null
+      }
+    }
   }
 }

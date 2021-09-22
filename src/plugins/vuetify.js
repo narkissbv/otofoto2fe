@@ -6,6 +6,9 @@ Vue.use(Vuetify);
 
 const vuetify = new Vuetify({
   theme: {
+    options: {
+      customProperties: true,
+    },
     themes: {
       light: {
         primary: colors.purple.lighten3,

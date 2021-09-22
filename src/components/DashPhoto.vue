@@ -244,6 +244,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import validationMixin from './../mixins/validations'
+import { navigateTo } from '../utils/utils'
 export default {
   mixins: [validationMixin],
   data () {
@@ -317,7 +318,7 @@ export default {
         {
           title: 'Albums',
           icon: 'mdi-image-album',
-          action: (item) => this.navigateTo('albums', {
+          action: (item) => navigateTo('albums', {
             id: item.id,
             name: item.name
           })
@@ -325,16 +326,14 @@ export default {
         {
           title: 'Photos',
           icon: 'mdi-image-multiple',
-          action: (item) => this.navigateTo('photos', {
+          action: (item) => navigateTo('photosByClient', {
             id: item.id,
-            name: item.name,
-            type: 'client',
           })
         },
         {
           title: 'Upload',
           icon: 'mdi-file-upload',
-          action: (item) => this.navigateTo('upload', {
+          action: (item) => navigateTo('upload', {
             id: item.id,
             name: item.name,
           })
@@ -461,17 +460,9 @@ export default {
       }
     },
 
-    navigateTo (name, params) {
-      this.$router.push({ name, params})
-    },
-
     myDebugger (something) {
       console.log(something)
     }
   },
 }
 </script>
-
-<style lang="stylus" scoped>
-
-</style>

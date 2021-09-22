@@ -49,7 +49,7 @@
           <v-toolbar
             flat
           >
-            <v-toolbar-title>{{ clientName || 'Client' }} Albums</v-toolbar-title>
+            <v-toolbar-title>{{ clientName(clientId) }} Albums</v-toolbar-title>
             <v-divider
               class="mx-4"
               inset
@@ -362,11 +362,11 @@ export default {
   },
   props: [
     'clientId',
-    'clientName'
   ],
   computed: {
     ...mapGetters({
       albums: 'albums/list',
+      clients: 'clients/list',
     }),
     formTitle () {
       return this.editedIndex === -1 ? 'New Album' : 'Edit Album'
@@ -432,6 +432,14 @@ export default {
         else if (!item.active) return 'info'
         else return ''
       }
+    },
+    clientName () {
+      return (clientId) => {
+        let client = this.clients.filter( c => {
+          return c.id == clientId
+        })
+        return client.length ? `${client[0].name}'s` : `Client's`
+      }
     }
   },
   methods: {
@@ -445,10 +453,12 @@ export default {
       lockAlbum: 'albums/lockAlbum',
       unlockAlbum: 'albums/unlockAlbum',
       deleteAlbum: 'albums/delete',
-      setMessage: 'setMessage'
+      setMessage: 'setMessage',
+      fetchClients: 'clients/fetchClients',
     }),
     init () {
       this.fetchAlbums({clientId: this.clientId})
+      this.fetchClients()
     },
 
     editItem (item) {

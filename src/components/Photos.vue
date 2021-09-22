@@ -3,7 +3,7 @@
     <v-card class="pa-4">
       <back-btn/>
       <v-card-title>
-        {{ clientName || 'Client' }}'s photos
+        {{ getClient.name }}'s photos
       </v-card-title>
       <v-row class="gallery-container">
         <v-col cols="12" sm="6" md="4" lg="3"
@@ -14,7 +14,6 @@
             <div :style="`background-image: url(${getImageSrc(photo.thumb)}`"
                  class="image-container">
             </div>
-            <!-- <img :src="getImageSrc(photo.thumb)"/> -->
             <v-divider class="my-4 mx-4"></v-divider>
             <v-row class="data mx-4 mb-4 justify-space-between">
               <v-col class="">{{ photo.filename }}</v-col>
@@ -44,7 +43,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      photos: 'photos/all'
+      photos: 'photos/all',
+      clients: 'clients/list',
     }),
     getImageSrc () {
       return (url) => {
@@ -52,43 +52,48 @@ export default {
         `http://localhost/otofoto2be/${url}` :
         `${window.location.origin}/${url}`
       }
+    },
+    getClient () {
+      const filteredClient = this.clients.filter( client => {
+        return client.id == this.$route.params.id
+      })
+      return filteredClient.length ? filteredClient[0] : 'Client'
     }
   },
   methods: {
     ...mapActions({
       fetchPhotos: 'photos/fetchPhotos',
+      fetchClients: 'clients/fetchClients',
       storeDelete: 'photos/delete',
     }),
     deletePhoto(payload) {
       this.storeDelete(payload).then( () => {
-        this.fetchPhotos({clientId: this.clientId})
+        this.fetchPhotos({clientId: this.id})
       })
     },
     init () {
       // TODO: fetch by client or by album (type prop)
-      switch (this.type) {
-        case 'client':
-          this.fetchPhotos({clientId: this.id})
-          break
+      switch (this.$route.meta.type) {
         case 'album':
-          this.fetchPhotos({albumId: this.id})
+          this.fetchPhotos({albumId: this.$route.params.id})
+          break
+        case 'client':
+        default:
+          this.fetchPhotos({clientId: this.$route.params.id})
+          break
       }
+      this.fetchClients()
     },
   },
   created () {
     this.init()
   },
-  props: [
-    'id',
-    'clientName',
-    'type',
-  ],
 }
 </script>
 
 <style scoped lang="scss">
   .image-container {
-    height: calc(60vh);
+    height: 60vh;
     background-size: cover;
     background-position: center;
     @media #{map-get($display-breakpoints, 'sm-and-up')} {

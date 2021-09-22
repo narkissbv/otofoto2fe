@@ -10,7 +10,7 @@ export default {
   },
   mutations: {
     setAuthUser(state, user) {
-      state.user = user || null;
+      state.user = user || null
     },
     // setErrorMessage(state, error) {
     //   state.error = error

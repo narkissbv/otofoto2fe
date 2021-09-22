@@ -1,43 +1,75 @@
 <template>
   <div>
     <v-card class="pa-4">
-      <v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="albums"
-        :search="search"
-        :items-per-page="20"
-        :item-class="rowClass"
-        :footer-props="{
-          'items-per-page-options': [20, 50, 100]
-        }"
-        class="elevation-1"
-      >
-
-      </v-data-table>
-      </v-card-title>
+      <v-row v-if="activeAlbums.length">
+        <v-col cols="12" sm="6" md="5" lg="4">
+          <h3>Select photos to your albums</h3>
+          <v-card-text>
+            <v-select v-model="albumSelect"
+                      :items="activeAlbums"
+                      @input="navigateTo('albumSelect', {id: albumSelect, description: getAlbum(albumSelect)['description']})"
+                      label="Select an album"
+            ></v-select>
+          </v-card-text>
+        </v-col>
+      </v-row>
+      <hr v-if="activeAlbums.length && inactiveAlbums.length"/>
+      <v-row v-if="inactiveAlbums.length">
+        <v-col cols="12" sm="6" md="5" lg="4">
+          <h3>Select photos to your albums</h3>
+          <v-card-text>
+            <v-select v-model="albumView"
+                      :items="inactiveAlbums"
+                      label="Select an album"
+            ></v-select>
+          </v-card-text>
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import utils from '../utils/utils'
 export default {
+  mixins: [utils],
   data () {
     return {
-      headers: [
-
-      ],
-      search: '',
+      albumSelect: null,
+      albumView: null,
     }
   },
   computed: {
     ...mapGetters({
-      albums: 'albums/list'
+      albums: 'albums/list',
+      user: 'account/user'
     }),
-    rowClass () {
-      return (album) => {
-        album.active ? 'unlocked' : 'locked'
+    activeAlbums () {
+      return this.albums.map( album => {
+        if (album.active) {
+          return {
+            text: album.description,
+            value: album.id
+          }
+        }
+      }).filter(Boolean)
+    },
+    inactiveAlbums () {
+      return this.albums.map( album => {
+        if (!album.active) {
+          return {
+            text: album.description,
+            value: album.id
+          }
+        }
+      }).filter(Boolean)
+    },
+    getAlbum () {
+      return (id) => {
+        return this.albums.filter (album => {
+          return album.id === id
+        })[0]
       }
     }
   },
@@ -46,12 +78,15 @@ export default {
       fetchAlbums: 'albums/fetchAlbums'
     }),
     init() {
-      this.fetchAlbums()
-    }
+      this.fetchAlbums({clientId: this.user.userId})
+    },
+  },
+  created () {
+    this.init()
   }
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="scss" scoped>
 
 </style>

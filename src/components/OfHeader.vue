@@ -3,10 +3,10 @@
       app
       color="primary"
       dark
+      style="z-index: 99"
     >
       <v-row dense justify-space-between align-center>
         <v-col class="shrink logo"
-                
                 @click="$router.push('/dashboard')">
           <v-img
             alt="otoFoto Logo"
