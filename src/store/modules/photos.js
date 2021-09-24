@@ -4,7 +4,10 @@ export default {
   namespaced: true,
 
   state: {
-    photos: []
+    photos: {
+      all: [],
+      selected: [],
+    }
   },
   mutations: {
     setPhotos(state, photos) {
@@ -16,7 +19,13 @@ export default {
     fetchPhotos ({ commit }, payload) {
       let p = sendAPI('getPhotos', payload)
       p.then(response => {
-        commit('setPhotos', response?.data?.data)
+        const data = response?.data?.data
+        data.all = data.all.map( (item, index) => {
+          return {
+              ...item, index
+          }
+        })
+        commit('setPhotos', data)
       })
       return p
     },

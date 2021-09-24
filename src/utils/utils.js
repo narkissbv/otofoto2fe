@@ -15,10 +15,17 @@ const navigateTo = (name, params) => {
   router.push({ name, params})
 }
 
+const getImageSrc = (url) => {
+    return window.location.hostname === 'localhost' ?
+    `http://localhost/otofoto2be/${url}` :
+    `${window.location.origin}/${url}`
+}
+
 export {
   API_BASE_URL,
   sendAPI,
   navigateTo,
+  getImageSrc,
 }
 
 export default {
@@ -27,6 +34,7 @@ export default {
   navigateTo,
   // for use in mixins
   methods: {
-    navigateTo
+    navigateTo,
+    getImageSrc,
   }
 }

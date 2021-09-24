@@ -8,14 +8,14 @@
 
       <v-row class="gallery-container">
         <v-col cols="12" sm="6" md="4" lg="3"
-             v-for="photo in photos.all"
+             v-for="photo in displayPhotos"
              :key="photo.id">
           <v-card outlined
                   :class="{'selected': isSelected(photo.id) }">
             <div :style="`background-image: url(${getImageSrc(photo.thumb)}`"
+                 @click="galleryImage = photo.id; galleryActive = true"
                  class="image-container">
             </div>
-            <!-- <img :src="getImageSrc(photo.thumb)"/> -->
             <v-divider class="my-4 mx-4"></v-divider>
             <v-row class="data mx-4 mb-4 justify-space-between">
               <v-col class="">{{ photo.filename }}</v-col>
@@ -32,23 +32,36 @@
           </v-card>
         </v-col>
       </v-row>
-
+      <in-view-port @inviewport="loadMore"/>
+      <selection-gallery :initImageId="galleryImage"
+                         :active="galleryActive"
+                         @close="galleryActive = false"/>
     </v-card>
   </div>
 </template>
 
 <script>
 import BackBtn from './backBtn'
+import InViewPort from './InViewPort.vue'
+import SelectionGallery from './SelectionGallery.vue'
 import { mapGetters, mapActions } from 'vuex'
+import utils from '../utils/utils'
 export default {
-
+  mixins: [utils],
   data () {
     return {
-      loading: false
+      loading: false,
+      displayPhotos: [],
+      imagesPerSection: 50,
+      section: 1,
+      galleryImage: 0,
+      galleryActive: false,
     }
   },
   components: {
     BackBtn,
+    InViewPort,
+    SelectionGallery,
   },
   computed: {
     ...mapGetters({
@@ -56,13 +69,13 @@ export default {
       photos: 'photos/all',
       albums: 'albums/list',
     }),
-    getImageSrc () {
-      return (url) => {
-        return window.location.hostname === 'localhost' ?
-        `http://localhost/otofoto2be/${url}` :
-        `${window.location.origin}/${url}`
-      }
-    },
+    // getImageSrc () {
+    //   return (url) => {
+    //     return window.location.hostname === 'localhost' ?
+    //     `http://localhost/otofoto2be/${url}` :
+    //     `${window.location.origin}/${url}`
+    //   }
+    // },
     isSelected () {
       return (photoId) => {
         return this.photos.selected.some( p => {
@@ -85,7 +98,6 @@ export default {
   },
   props: [
     'albumId',
-    'description'
   ],
   methods: {
     ...mapActions({
@@ -95,6 +107,7 @@ export default {
     fetchAlbums: 'albums/fetchAlbums',
     }),
     setPhoto(photoId) {
+
       this.loading = true
       if (this.isSelected(photoId)) {
         this.photoUnselect({photoId, albumId: this.albumId}).then( () => {
@@ -110,8 +123,17 @@ export default {
         })
       }
     },
+    loadMore() {
+      if (!this.photos.all.length) return
+      this.displayPhotos = this.displayPhotos.concat(
+        this.photos.all.slice(
+          this.imagesPerSection * this.section, this.imagesPerSection * (this.section + 1)))
+      this.section++
+    },
     init () {
-      this.fetchPhotos({albumId: this.albumId})
+      this.fetchPhotos({albumId: this.albumId}).then( () => {
+        this.displayPhotos = this.photos.all.slice(0,this.imagesPerSection)
+      })
       this.fetchAlbums({clientId: this.user.userId})
     }
   },
@@ -129,6 +151,7 @@ export default {
     height: 30vh;
     background-size: cover;
     background-position: center;
+    cursor: pointer;
     @media #{map-get($display-breakpoints, 'sm-and-up')} {
       height: 300px;
     }

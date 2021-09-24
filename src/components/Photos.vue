@@ -7,7 +7,7 @@
       </v-card-title>
       <v-row class="gallery-container">
         <v-col cols="12" sm="6" md="4" lg="3"
-             v-for="photo in photos"
+             v-for="photo in displayPhotos"
              :key="photo.id"
              class="">
           <v-card outlined>
@@ -25,34 +25,41 @@
           </v-card>
         </v-col>
       </v-row>
+      <in-view-port @inviewport="loadMore"/>
     </v-card>
   </div>
 </template>
 
 <script>
 import BackBtn from './backBtn'
+import InViewPort from './InViewPort.vue'
 import { mapActions, mapGetters } from 'vuex'
+import utils from '../utils/utils'
 export default {
+  mixins: [utils],
   data () {
     return {
-
+      displayPhotos: [],
+      imagesPerSection: 50,
+      section: 0,
     }
   },
   components: {
     BackBtn,
+    InViewPort,
   },
   computed: {
     ...mapGetters({
       photos: 'photos/all',
       clients: 'clients/list',
     }),
-    getImageSrc () {
-      return (url) => {
-        return window.location.hostname === 'localhost' ?
-        `http://localhost/otofoto2be/${url}` :
-        `${window.location.origin}/${url}`
-      }
-    },
+    // getImageSrc () {
+    //   return (url) => {
+    //     return window.location.hostname === 'localhost' ?
+    //     `http://localhost/otofoto2be/${url}` :
+    //     `${window.location.origin}/${url}`
+    //   }
+    // },
     getClient () {
       const filteredClient = this.clients.filter( client => {
         return client.id == this.$route.params.id
@@ -71,15 +78,25 @@ export default {
         this.fetchPhotos({clientId: this.id})
       })
     },
+    loadMore() {
+      this.displayPhotos = this.displayPhotos.concat(
+        this.photos.slice(
+          this.imagesPerSection * this.section, this.imagesPerSection * (this.section + 1)))
+      this.section++
+    },
     init () {
       // TODO: fetch by client or by album (type prop)
       switch (this.$route.meta.type) {
         case 'album':
-          this.fetchPhotos({albumId: this.$route.params.id})
+          this.fetchPhotos({albumId: this.$route.params.id}).then( () => {
+            this.displayPhotos = this.photos.slice(0,this.imagesPerSection)
+          })
           break
         case 'client':
         default:
-          this.fetchPhotos({clientId: this.$route.params.id})
+          this.fetchPhotos({clientId: this.$route.params.id}).then( () => {
+            this.displayPhotos = this.photos.slice(0,this.imagesPerSection)
+          })
           break
       }
       this.fetchClients()
