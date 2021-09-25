@@ -4,7 +4,9 @@
       v-model="active"
       fullscreen
       hide-overlay
+      persistent
       transition="dialog-bottom-transition"
+      @keydown="keysControl"
     >
       <v-card>
         <div class="controls">
@@ -18,6 +20,7 @@
           <div class="select">
             <v-btn @click="setPhoto(imageId)"
                    icon
+                   :loading="loading"
                    :color="getColor"
                    x-large>
               <v-icon>{{ isSelected(imageId) ? 'mdi-checkbox-marked-outline' :  'mdi-checkbox-blank-outline'}}</v-icon>
@@ -55,7 +58,8 @@ export default {
   data () {
     return {
       imageId: this.initImageId,
-      albumId: this.$route.params.id
+      albumId: this.$route.params.id,
+      loading: false,
     }
   },
   props: {
@@ -96,7 +100,7 @@ export default {
   watch: {
     initImageId: function (newVal) {
       this.imageId = newVal
-    }
+    },
   },
   methods: {
     ...mapActions({
@@ -148,6 +152,25 @@ export default {
         return image.id == this.imageId
       })
       return image[0] || null
+    },
+    keysControl (event) {
+      switch (event.keyCode) {
+        case 37:
+          // left
+          this.prev()
+          break
+        case 39:
+          // right
+          this.next()
+          break
+        case 32:
+          // space
+          this.setPhoto(this.imageId)
+          break
+        case 27:
+          // esc
+          this.close()
+      }
     }
   },
 }

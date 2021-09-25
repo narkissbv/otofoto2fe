@@ -52,7 +52,7 @@ export default {
     return {
       loading: false,
       displayPhotos: [],
-      imagesPerSection: 50,
+      imagesPerSection: 48,
       section: 1,
       galleryImage: 0,
       galleryActive: false,
