@@ -16,6 +16,8 @@ const vuetify = new Vuetify({
         accent: colors.purple.lighten5,
         error: colors.red.accent3,
         warning: colors.pink.lighten5,
+        galleryIcons: '#fff',
+        success: colors.green.lighten2,
         info: '#f4e7ff'
       },
       dark: {
@@ -24,6 +26,8 @@ const vuetify = new Vuetify({
         accent: colors.purple.darken4,
         error: colors.red.accent1,
         warning: '#421b30',
+        galleryIcons: '#fff',
+        success: colors.green.base,
         info: '#4d3452'
       },
     },

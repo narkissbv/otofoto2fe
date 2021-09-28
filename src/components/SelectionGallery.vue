@@ -8,13 +8,13 @@
       transition="dialog-bottom-transition"
       @keydown="keysControl"
     >
-      <v-card>
+      <v-card class="gallery-wrapper">
         <div class="controls">
           <div class="close">
             <v-btn icon
                    x-large
                    @click="close">
-              <v-icon>mdi-close</v-icon>
+              <v-icon color="galleryIcons">mdi-close</v-icon>
             </v-btn>
           </div>
           <div class="select">
@@ -30,14 +30,14 @@
             <v-btn icon
                    x-large
                    @click="prev">
-              <v-icon>mdi-chevron-left</v-icon>
+              <v-icon color="galleryIcons">mdi-chevron-left</v-icon>
             </v-btn>
           </div>
           <div class="next">
             <v-btn icon
                    x-large
                    @click="next">
-              <v-icon>mdi-chevron-right</v-icon>
+              <v-icon color="galleryIcons">mdi-chevron-right</v-icon>
             </v-btn>
           </div>
         </div>
@@ -69,7 +69,11 @@ export default {
     },
     active: {
       type: Boolean,
-      required: true
+      required: true,
+    },
+    photoFilter: {
+      type: String,
+      required: false,
     }
   },
   computed: {
@@ -77,7 +81,7 @@ export default {
       photos: 'photos/all'
     }),
     getImageSrc () {
-      let image = this.photos.all.filter( image => {
+      let image = this.getImages.filter( image => {
         return image.id == this.imageId
       })
       if (image.length) {
@@ -93,8 +97,24 @@ export default {
         })
       }
     },
+    getImages () {
+        let filter = null
+        switch (this.photoFilter) {
+          case 'selected':
+            filter = this.photos.selected
+            break
+          case 'unselected':
+            filter = this.photos.unselected
+            break
+          case 'all':
+          default:
+            filter = this.photos.all
+            break
+        }
+        return filter
+    },
     getColor () {
-      return this.isSelected(this.imageId) ? 'primary' : ''
+      return this.isSelected(this.imageId) ? 'primary' : 'galleryIcons'
     },
   },
   watch: {
@@ -114,21 +134,21 @@ export default {
     prev () {
       let currentIndex = this.getImage().index
       if (currentIndex == 0) {
-        currentIndex = this.photos.all.length - 1
+        currentIndex = this.getImages.length - 1
       } else {
         currentIndex--
       }
-      let prevImage = this.photos.all[currentIndex]
+      let prevImage = this.getImages[currentIndex]
       this.imageId = prevImage.id
     },
     next () {
       let currentIndex = this.getImage().index
-      if (currentIndex >= this.photos.all.length - 1) {
+      if (currentIndex >= this.getImages.length - 1) {
         currentIndex = 0
       } else {
         currentIndex++
       }
-      let nextImage = this.photos.all[currentIndex]
+      let nextImage = this.getImages[currentIndex]
       this.imageId = nextImage.id
     },
     setPhoto(photoId) {
@@ -148,7 +168,7 @@ export default {
       }
     },
     getImage () {
-      const image = this.photos.all.filter(image => {
+      const image = this.getImages.filter(image => {
         return image.id == this.imageId
       })
       return image[0] || null
@@ -177,28 +197,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .gallery-wrapper {
+    backdrop-filter: blur(30px);
+    background-color: rgba(0,0,0,0.5)
+  }
   .controls {
     position: relative;
     height: 100vh;
     z-index: 1;
     & > div {
       position: absolute;
+      // background-color: rgba(0,0,0,0.5);
+      // border-radius: 50%;
     }
     .close {
-      top: 0;
-      right: 0;
+      top: 10px;
+      right: 10px;
     }
     .select {
-      bottom: 0;
-      right: 0;
+      bottom: 10px;
+      right: 10px;
     }
     .prev {
-      left: 0;
+      left: 10px;
       top: 50%;
       transform: translateY(-50%);
     }
     .next {
-      right: 0;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
     }

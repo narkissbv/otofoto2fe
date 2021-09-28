@@ -104,7 +104,17 @@ export default {
       }, error => {
         commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
-    }
+    },
+    finish ( context, payload) {
+      const url = 'finishSelection'
+      const p = sendAPI(url, payload)
+      p.then( resp => {
+        const clientId = context.rootGetters['account/user'].userId
+        context.dispatch('fetchAlbums', {clientId: clientId})
+        context.commit('setMessage', resp?.data?.message, { root: true })
+      })
+      return p
+    },
   },
   getters: {
     list(state) {

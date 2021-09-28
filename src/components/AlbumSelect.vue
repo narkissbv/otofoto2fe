@@ -5,7 +5,23 @@
       <v-card-title>
         {{ `Select photos for album ${getDescription(albumId)}` }}
       </v-card-title>
-
+      <v-row>
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <v-select v-model="photoFilter"
+                    label="Show photos"
+                    hide-details
+                    :items="photoFilters"
+                    @change="setFilter"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <v-btn @click="finishDialog = true"
+                 color="success">
+            Finish
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row class="gallery-container">
         <v-col cols="12" sm="6" md="4" lg="3"
              v-for="photo in displayPhotos"
@@ -35,7 +51,53 @@
       <in-view-port @inviewport="loadMore"/>
       <selection-gallery :initImageId="galleryImage"
                          :active="galleryActive"
+                         :photoFilter="photoFilter"
                          @close="galleryActive = false"/>
+      <selection-index/>
+      <v-dialog v-model="finishDialog"
+                max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            Finished already?
+          </v-card-title>
+
+          <v-card-text>
+            <div class="" v-if="finishProgress">
+              <p>Saving your selections, please wait...</p>
+              <v-progress-linear indeterminate></v-progress-linear>
+            </div>
+            <div v-else>
+              <p>Finishing selecting photos will close your
+                ability to change your selections and a message
+                will be sent to your photographer.</p>
+              <p> Are you sure you want to finish selecting photos
+                  for this album?</p>
+            </div>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="secondary"
+                   text
+                   :disabled="finishProgress"
+                   @click="finishProgress = false; finishDialog = false"
+            >
+              cancel 
+            </v-btn>
+            <v-btn
+              color="primary"
+              text
+              :disabled="finishProgress"
+              @click="finishSelection()"
+            >
+              Yes, finish!
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -44,8 +106,9 @@
 import BackBtn from './backBtn'
 import InViewPort from './InViewPort.vue'
 import SelectionGallery from './SelectionGallery.vue'
+import SelectionIndex from './SelectionIndex.vue'
 import { mapGetters, mapActions } from 'vuex'
-import utils from '../utils/utils'
+import utils, { navigateTo } from '../utils/utils'
 export default {
   mixins: [utils],
   data () {
@@ -56,12 +119,30 @@ export default {
       section: 1,
       galleryImage: 0,
       galleryActive: false,
+      photoFilter: 'all',
+      finishProgress: false,
+      finishDialog: false,
+      photoFilters: [
+        {
+          text: 'All',
+          value: 'all',
+        },
+        {
+          text: 'Selected',
+          value: 'selected',
+        },
+        {
+          text: 'Non-selected',
+          value: 'unselected',
+        }
+      ],
     }
   },
   components: {
     BackBtn,
     InViewPort,
     SelectionGallery,
+    SelectionIndex,
   },
   computed: {
     ...mapGetters({
@@ -69,13 +150,6 @@ export default {
       photos: 'photos/all',
       albums: 'albums/list',
     }),
-    // getImageSrc () {
-    //   return (url) => {
-    //     return window.location.hostname === 'localhost' ?
-    //     `http://localhost/otofoto2be/${url}` :
-    //     `${window.location.origin}/${url}`
-    //   }
-    // },
     isSelected () {
       return (photoId) => {
         return this.photos.selected.some( p => {
@@ -94,6 +168,22 @@ export default {
           return ''
         }
       }
+    },
+    filter () {
+        let filter = null
+        switch (this.photoFilter) {
+          case 'selected':
+            filter = this.photos.selected
+            break
+          case 'unselected':
+            filter = this.photos.unselected
+            break
+          case 'all':
+          default:
+            filter = this.photos.all
+            break
+        }
+        return filter
     }
   },
   props: [
@@ -105,9 +195,9 @@ export default {
     photoSelect: 'photos/select',
     photoUnselect: 'photos/unselect',
     fetchAlbums: 'albums/fetchAlbums',
+    finish: 'albums/finish',
     }),
     setPhoto(photoId) {
-
       this.loading = true
       if (this.isSelected(photoId)) {
         this.photoUnselect({photoId, albumId: this.albumId}).then( () => {
@@ -124,15 +214,26 @@ export default {
       }
     },
     loadMore() {
-      if (!this.photos.all.length) return
+      if (!this.filter.length) return
       this.displayPhotos = this.displayPhotos.concat(
-        this.photos.all.slice(
+        this.filter.slice(
           this.imagesPerSection * this.section, this.imagesPerSection * (this.section + 1)))
       this.section++
     },
+    setFilter () {
+      this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
+    },
+    finishSelection () {
+      this.finishProgress = true
+      this.finish({albumId: this.albumId}).then( () => {
+        this.finishProgress = false
+        this.finishDialog = false
+        navigateTo('dashboard')
+      })
+    },
     init () {
       this.fetchPhotos({albumId: this.albumId}).then( () => {
-        this.displayPhotos = this.photos.all.slice(0,this.imagesPerSection)
+        this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
       })
       this.fetchAlbums({clientId: this.user.userId})
     }

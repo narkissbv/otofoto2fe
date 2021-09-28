@@ -7,6 +7,7 @@ export default {
     photos: {
       all: [],
       selected: [],
+      unselected: [],
     }
   },
   mutations: {
@@ -21,6 +22,16 @@ export default {
       p.then(response => {
         const data = response?.data?.data
         data.all = data.all.map( (item, index) => {
+          return {
+              ...item, index
+          }
+        })
+        data.selected = data.selected.map( (item, index) => {
+          return {
+              ...item, index
+          }
+        })
+        data.unselected = data.unselected.map( (item, index) => {
           return {
               ...item, index
           }
