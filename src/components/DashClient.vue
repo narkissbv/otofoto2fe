@@ -7,7 +7,7 @@
           <v-card-text>
             <v-select v-model="albumSelect"
                       :items="activeAlbums"
-                      @input="navigateTo('albumSelect', {id: albumSelect, description: getAlbum(albumSelect)['description']})"
+                      @input="navigateTo('albumSelect', {id: albumSelect})"
                       label="Select an album"
             ></v-select>
           </v-card-text>
@@ -20,6 +20,7 @@
           <v-card-text>
             <v-select v-model="albumView"
                       :items="inactiveAlbums"
+                      @input="navigateTo('albumView', {id: albumView})"
                       label="Select an album"
             ></v-select>
           </v-card-text>

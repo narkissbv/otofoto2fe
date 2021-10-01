@@ -38,7 +38,7 @@
               <v-list-item v-if="isLoggedin"
                            @click="logout">
                 <v-list-item-title>
-                  <v-icon>mdi-power</v-icon>
+                  <v-icon color="error">mdi-power</v-icon>
                   Logout
                 </v-list-item-title>
               </v-list-item>

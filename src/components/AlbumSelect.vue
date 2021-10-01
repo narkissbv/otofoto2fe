@@ -3,9 +3,17 @@
     <v-card class="pa-4">
       <back-btn/>
       <v-card-title>
-        {{ `Select photos for album ${getDescription(albumId)}` }}
+        <span v-if="action === 'select'">
+          {{ `Select photos for album ${getDescription(albumId)}` }}
+        </span>
+        <span v-if="action === 'view'">
+          {{ `Selected photos for album ${getDescription(albumId)}` }}
+        </span>
+        <span v-if="type === 'client'">
+          {{ getClient.name }}'s photos
+        </span>
       </v-card-title>
-      <v-row>
+      <v-row v-if="action === 'select'">
         <v-col cols="12" sm="6" md="4" lg="3">
           <v-select v-model="photoFilter"
                     label="Show photos"
@@ -27,7 +35,7 @@
              v-for="photo in displayPhotos"
              :key="photo.id">
           <v-card outlined
-                  :class="{'selected': isSelected(photo.id) }">
+                  :class="{'selected': type === 'album' && isSelected(photo.id) }">
             <div :style="`background-image: url(${getImageSrc(photo.thumb)}`"
                  @click="galleryImage = photo.id; galleryActive = true"
                  class="image-container">
@@ -35,7 +43,7 @@
             <v-divider class="my-4 mx-4"></v-divider>
             <v-row class="data mx-4 mb-4 justify-space-between">
               <v-col class="">{{ photo.filename }}</v-col>
-              <v-col class="shrink">
+              <v-col class="shrink" v-if="action === 'select'">
                 <v-btn @click="setPhoto(photo.id)"
                   icon
                   :loading="loading">
@@ -44,16 +52,23 @@
                   </v-icon>
                 </v-btn>
               </v-col>
+              <v-col class="shrink" v-if="type === 'client'">
+                <v-btn @click="deletePhoto({photoId: photo.id})"
+                       icon
+                       :loading="loading">
+                  <v-icon color="error">mdi-delete</v-icon>
+                </v-btn>
+              </v-col>
             </v-row>
           </v-card>
         </v-col>
       </v-row>
-      <in-view-port @inviewport="loadMore"/>
+      <in-view-port @inviewport="loadMore" v-if="displayPhotos.length"/>
       <selection-gallery :initImageId="galleryImage"
                          :active="galleryActive"
                          :photoFilter="photoFilter"
                          @close="galleryActive = false"/>
-      <selection-index/>
+      <selection-index v-if="action === 'select'"/>
       <v-dialog v-model="finishDialog"
                 max-width="500"
       >
@@ -116,7 +131,7 @@ export default {
       loading: false,
       displayPhotos: [],
       imagesPerSection: 48,
-      section: 1,
+      section: 0,
       galleryImage: 0,
       galleryActive: false,
       photoFilter: 'all',
@@ -149,7 +164,14 @@ export default {
       user: 'account/user',
       photos: 'photos/all',
       albums: 'albums/list',
+      clients: 'clients/list'
     }),
+    getClient () {
+      const filteredClient = this.clients.filter( client => {
+        return client.id == this.clientId
+      })
+      return filteredClient.length ? filteredClient[0] : 'Client'
+    },
     isSelected () {
       return (photoId) => {
         return this.photos.selected.some( p => {
@@ -170,6 +192,9 @@ export default {
       }
     },
     filter () {
+      if (this.action === 'view') {
+        return this.photos.selected
+      } else if (this.action === 'select') {
         let filter = null
         switch (this.photoFilter) {
           case 'selected':
@@ -184,58 +209,111 @@ export default {
             break
         }
         return filter
-    }
+      } else if (this.type === "client") {
+        return this.photos.all
+      } else {
+        return []
+      }
+    },
+    action () {
+      return this.$route.meta.action
+    },
+    type () {
+      return this.$route.meta.type
+    },
+    albumId () {
+      if (this.$route.meta.type === 'album') {
+        return this.$route.params.id
+      } else {
+        return false
+      }
+    },
+    clientId () {
+      if (this.$route.meta.type === 'client') {
+        return this.$route.params.id
+      } else {
+        return false
+      }
+    },
   },
   props: [
-    'albumId',
+    // 'albumId',
+    // 'clientId',
   ],
   methods: {
     ...mapActions({
     fetchPhotos: 'photos/fetchPhotos',
     photoSelect: 'photos/select',
     photoUnselect: 'photos/unselect',
+    storeDelete: 'photos/delete',
     fetchAlbums: 'albums/fetchAlbums',
     finish: 'albums/finish',
+    setMessage: 'setMessage',
+    fetchClients: 'clients/fetchClients',
     }),
     setPhoto(photoId) {
       this.loading = true
       if (this.isSelected(photoId)) {
-        this.photoUnselect({photoId, albumId: this.albumId}).then( () => {
+        this.photoUnselect({photoId, albumId: this.albumId}).then( (resp) => {
+          this.setMessage(resp.data.message)
           this.fetchPhotos({albumId: this.albumId}).then( () => {
             this.loading = false
           });
         })
       } else {
-        this.photoSelect({photoId, albumId: this.albumId}).then( () => {
+        this.photoSelect({photoId, albumId: this.albumId}).then( (resp) => {
+          this.setMessage(resp.data.message)
           this.fetchPhotos({albumId: this.albumId}).then( () => {
             this.loading = false
           })
         })
       }
     },
+    deletePhoto(payload) {
+      this.loading = true
+      this.storeDelete(payload).then( (resp) => {
+        this.setMessage(resp.data.message)
+        this.fetchPhotos({clientId: this.clientId}).then( () => {
+          this.loading = false
+          // remove the deleted photo from display
+          this.displayPhotos = this.displayPhotos.filter( photo => {
+            return photo.id != payload.photoId
+          })
+        })
+      })
+    },
     loadMore() {
       if (!this.filter.length) return
+      this.section++
       this.displayPhotos = this.displayPhotos.concat(
         this.filter.slice(
           this.imagesPerSection * this.section, this.imagesPerSection * (this.section + 1)))
-      this.section++
     },
     setFilter () {
+      this.section = 0
       this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
     },
     finishSelection () {
       this.finishProgress = true
-      this.finish({albumId: this.albumId}).then( () => {
+      this.finish({albumId: this.albumId}).then( (resp) => {
+        this.setMessage(resp.data.message)
         this.finishProgress = false
         this.finishDialog = false
         navigateTo('dashboard')
       })
     },
     init () {
-      this.fetchPhotos({albumId: this.albumId}).then( () => {
-        this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
-      })
-      this.fetchAlbums({clientId: this.user.userId})
+      if (this.albumId) {
+        this.fetchPhotos({albumId: this.albumId}).then( () => {
+          this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
+        })        
+        this.fetchAlbums({clientId: this.user.userId})
+      } else if (this.clientId) {
+        this.fetchPhotos({clientId: this.clientId}).then( () => {
+          this.displayPhotos = this.filter.slice(0,this.imagesPerSection)
+        })
+        this.fetchClients()
+      }
     }
   },
   created () {

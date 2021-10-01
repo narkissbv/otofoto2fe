@@ -17,7 +17,7 @@
               <v-icon color="galleryIcons">mdi-close</v-icon>
             </v-btn>
           </div>
-          <div class="select">
+          <div class="select" v-if="action === 'select'">
             <v-btn @click="setPhoto(imageId)"
                    icon
                    :loading="loading"
@@ -98,6 +98,9 @@ export default {
       }
     },
     getImages () {
+      if (this.action === 'view') {
+        return this.photos.selected
+      } else if (this.action === 'select') {
         let filter = null
         switch (this.photoFilter) {
           case 'selected':
@@ -112,6 +115,17 @@ export default {
             break
         }
         return filter
+      } else if (this.type === "client") {
+        return this.photos.all
+      } else {
+        return []
+      }
+    },
+    action () {
+      return this.$route.meta.action
+    },
+    type () {
+      return this.$route.meta.type
     },
     getColor () {
       return this.isSelected(this.imageId) ? 'primary' : 'galleryIcons'
@@ -185,7 +199,9 @@ export default {
           break
         case 32:
           // space
-          this.setPhoto(this.imageId)
+          if (this.action === 'select') {
+            this.setPhoto(this.imageId)
+          }
           break
         case 27:
           // esc

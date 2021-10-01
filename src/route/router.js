@@ -5,7 +5,7 @@ import Login from '@/components/LoginPage'
 import Dashboard from '@/components/Dashboard'
 import Albums from '@/components/Albums'
 import Upload from '@/components/Upload'
-import Photos from '@/components/Photos'
+// import Photos from '@/components/Photos'
 import Signup from '@/components/Signup'
 import AlbumSelect from '@/components/AlbumSelect'
 
@@ -69,15 +69,12 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
       },
-      component: Photos,
+      component: AlbumSelect,
       children: [
         {
           name: 'photosByAlbum',
           path: 'album/:id',
-          component: Photos,
-          props: route => ({
-            id: route.params.id,
-          }),
+          component: AlbumSelect,
           meta: {
             type: 'album',
             requiresAuth: true,
@@ -86,11 +83,9 @@ const router = new VueRouter({
         {
           name: 'photosByClient',
           path: 'client/:id',
-          component: Photos,
-          props: route => ({
-            id: route.params.id,
-          }),
+          component: AlbumSelect,
           meta: {
+            action: 'delete',
             type: 'client',
             requiresAuth: true,
           }
@@ -102,11 +97,25 @@ const router = new VueRouter({
       path: '/select/:id',
       meta: {
         requiresAuth: true,
+        action: 'select',
+        type: 'album',
       },
       component: AlbumSelect,
       props: route => ({
         albumId: route.params.id,
-        description: route.params.description,
+      })
+    },
+    {
+      name: 'albumView',
+      path: '/view/:id',
+      meta: {
+        requiresAuth: true,
+        action: 'view',
+        type: 'album',
+      },
+      component: AlbumSelect,
+      props: route => ({
+        albumId: route.params.id,
       })
     }
   ]
