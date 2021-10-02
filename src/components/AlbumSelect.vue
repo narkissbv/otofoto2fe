@@ -30,6 +30,15 @@
           </v-btn>
         </v-col>
       </v-row>
+      <v-row v-if="type === 'client'">
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <v-text-field v-model="photoSearch"
+                    label="Search photos"
+                    hide-details
+                    @input="setFilter"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row class="gallery-container">
         <v-col cols="12" sm="6" md="4" lg="3"
              v-for="photo in displayPhotos"
@@ -137,6 +146,7 @@ export default {
       photoFilter: 'all',
       finishProgress: false,
       finishDialog: false,
+      photoSearch: null,
       photoFilters: [
         {
           text: 'All',
@@ -192,10 +202,10 @@ export default {
       }
     },
     filter () {
+      let filter = null
       if (this.action === 'view') {
         return this.photos.selected
       } else if (this.action === 'select') {
-        let filter = null
         switch (this.photoFilter) {
           case 'selected':
             filter = this.photos.selected
@@ -208,12 +218,21 @@ export default {
             filter = this.photos.all
             break
         }
-        return filter
+        // return filter
       } else if (this.type === "client") {
-        return this.photos.all
+        // return this.photos.all
+        filter = this.photos.all
       } else {
-        return []
+        // return []
+        filter = []
       }
+      // filter search
+      if (this.photoSearch) {
+        filter = filter.filter( photo => {
+          return photo.filename.indexOf(this.photoSearch) > -1
+        })
+      }
+      return filter
     },
     action () {
       return this.$route.meta.action
