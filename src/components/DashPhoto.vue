@@ -165,7 +165,7 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                      color="gray darken-1"
+                      color="secondary"
                       text
                       @click="close"
                     >

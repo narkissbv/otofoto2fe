@@ -24,7 +24,7 @@ export default {
       })[0]
     },
     progress () {
-      if (this.photos && this.currentAlbum) {
+      if (this.photos?.selected && this.currentAlbum) {
         return this.photos.selected.length / this.currentAlbum.photos * 100
       } else {
         return ''
@@ -32,7 +32,7 @@ export default {
     },
     description () {
       if (this.currentAlbum) {
-        return `Selected ${this.photos.selected.length}
+        return `Selected ${this.photos?.selected?.length}
                 photos out of ${this.currentAlbum.photos}
                 for ${this.currentAlbum.description}`
       } else {

@@ -230,7 +230,7 @@ export default {
   data () {
     return {
       search: '',
-      filterLocked: 'unlocked',
+      filterLocked: 'all',
       filterActive: 'active',
       lockedFilters: [
         {

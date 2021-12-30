@@ -35,6 +35,7 @@
           <v-text-field v-model="photoSearch"
                     label="Search photos"
                     hide-details
+                    append-icon="mdi-magnify"
                     @input="setFilter"
           ></v-text-field>
         </v-col>

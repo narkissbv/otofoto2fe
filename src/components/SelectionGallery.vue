@@ -92,9 +92,13 @@ export default {
     },
     isSelected () {
       return (photoId) => {
-        return this.photos.selected.some( p => {
-          return p.id === photoId
-        })
+        if (this.photos?.selected) {
+          return this.photos.selected.some( p => {
+            return p.id === photoId
+          })
+        } else {
+          return false
+        }
       }
     },
     getImages () {

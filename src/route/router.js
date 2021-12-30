@@ -43,7 +43,6 @@ const router = new VueRouter({
       component: Albums,
       props: route => ({
         clientId: route.params.id,
-        clientName: route.params.name
       }),
     },
     {
