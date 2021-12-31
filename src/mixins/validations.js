@@ -7,7 +7,7 @@ const validationMixin = {
   },
   data: () => ({
     validations: {
-      email: value => EMAIL_REGEX.test(value) || 'Please enter a valid email address',      
+      email: value => !value || EMAIL_REGEX.test(value) || 'Please enter a valid email address',      
       required: value => !!value || 'Required.',
       albumName: value => NO_WHITESPACE.test(value) || 'English letters, numbers and no special characters',
       positive: value => value >= 0 || 'Value should be positive number',

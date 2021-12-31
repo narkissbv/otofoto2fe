@@ -40,7 +40,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
-              v-model="password"
+              v-model="email"
               required
               :rules="[validations.email]"
               label="Email"
@@ -92,7 +92,12 @@ export default {
     doSignup () {
       this.$refs.signupForm.validate()
       if (this.valid) {
-        this.signup({ username: this.username, password: this.password })
+        this.signup({
+            username: this.username,
+            password: this.password,
+            name: this.name,
+            email: this.email,
+          })
       }
     }
   }
