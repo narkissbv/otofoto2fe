@@ -5,12 +5,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import DashClient from './DashClient'
-import DashPhoto from './DashPhoto'
+import DashPhotographer from '@/views/DashPhotographer/DashPhotographer'
 import DashAdmin from './DashAdmin'
 export default {
   components: {
     DashClient,
-    DashPhoto,
+    DashPhotographer,
     DashAdmin
   },
   computed: {
@@ -20,7 +20,7 @@ export default {
     dashboardComponent () {
       switch (this.user.type) {
         case 'photo':
-          return DashPhoto
+          return DashPhotographer
         case 'admin':
           return DashAdmin
         case 'client':

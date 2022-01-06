@@ -47,140 +47,8 @@
             ></v-divider>
             <v-spacer></v-spacer>
 
-            <!-- Add / Edit client dialog -->
-            <v-dialog
-              v-model="dialog"
-              max-width="500px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon left>mdi-account-plus</v-icon>
-                  Add client
-                </v-btn>
-              </template>
-              <v-card>
-                <v-form v-model="addClientFormValid"
-                        @submit="save"
-                        ref="addClientForm">
-
-
-                  <v-card-title>
-                    <span class="headline">{{ formTitle }}</span>
-                  </v-card-title>
-
-                  <v-card-text>
-                    <v-container>
-                      <h3>Client information</h3>
-                      <v-row>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="editedItem.name"
-                            label="Name"
-                            counter="40"
-                            :rules="[validations.required]"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="editedItem.phone"
-                            :rules="[validations.required]"
-                            type="tel"
-                            label="Phone"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          :sm="editedIndex != -1 ? 6 : 12"
-                        >
-                          <v-text-field
-                            v-model="editedItem.email"
-                            :rules="[validations.email]"
-                            type="email"
-                            label="Email"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col
-                          v-if="editedIndex != -1"
-                          cols="12"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="editedItem.password"
-                            :rules="[validations.password]"
-                            type="password"
-                            label="New password"
-                          ></v-text-field>
-                        </v-col>
-
-                      </v-row>
-                      <v-divider class="mb-5"/>
-                      <div class="album-details" v-if="editedIndex === -1">
-                        <h3>Album information</h3>
-                        <v-row>
-                          <v-col
-                            cols="12"
-                            sm="6"
-                          >
-                            <v-text-field
-                              v-model="editedItem.albumName"
-                              label="Album name"
-                              counter="20"
-                              :rules="[validations.albumName, validations.required]"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            cols="12"
-                            sm="6"
-                          >
-                            <v-text-field
-                              v-model="editedItem.albumNumber"
-                              :rules="[validations.required, validations.positive]"
-                              type="number"
-                              label="Number of photos"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col>
-                            <v-checkbox
-                              v-model="editedItem.shareable"
-                              label="Enable album sharing"
-                            ></v-checkbox>
-                          </v-col>
-                        </v-row>
-                      </div>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="secondary"
-                      text
-                      @click="close"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      color="primary"
-                      type="submit"
-                    >
-                      Save
-                    </v-btn>
-                  </v-card-actions>
-                </v-form>
-              </v-card>
-            </v-dialog>
+            <!-- Add new client dialog -->
+            <dialog-add-client/>
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
                 <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
@@ -243,8 +111,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import validationMixin from './../mixins/validations'
-import { navigateTo } from '../utils/utils'
+import validationMixin from '@/mixins/validations'
+import { navigateTo } from '@/utils/utils'
+import DialogAddClient from './DialogAddClient'
 export default {
   mixins: [validationMixin],
   data () {
@@ -286,7 +155,6 @@ export default {
         },
       ],
       search: '',
-      dialog: false,
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
@@ -299,16 +167,16 @@ export default {
         password: '',
         shareable: false
       },
-      defaultItem: {
-        id: null,
-        name: '',
-        email: '',
-        phone: '',
-        password: '',
-        albumName: '',
-        albumNumber: null,
-        shareable: false
-      },
+      // defaultItem: {
+      //   id: null,
+      //   name: '',
+      //   email: '',
+      //   phone: '',
+      //   password: '',
+      //   albumName: '',
+      //   albumNumber: null,
+      //   shareable: false
+      // },
       actions: [
         {
           title: 'Edit',
@@ -355,10 +223,11 @@ export default {
           color: 'error'
         },
       ],
-      addClientFormValid: false
     }
   },
-
+  components: {
+    DialogAddClient,
+  },
   computed: {
     ...mapGetters({
       clients: 'clients/list'
@@ -389,13 +258,13 @@ export default {
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
-    },
+    // dialog (val) {
+    //   val || this.close()
+    // },
 
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
+    // dialogDelete (val) {
+    //   val || this.closeDelete()
+    // },
   },
 
   created () {
@@ -430,34 +299,12 @@ export default {
       this.closeDelete()
     },
 
-    close () {
-      this.dialog = false
-      this.$refs.addClientForm.resetValidation()
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
     closeDelete () {
       this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
-
-    async save () {
-      this.$refs.addClientForm.validate()
-      if (this.addClientFormValid) {
-        if (this.editedIndex === -1) {
-          await this.addClient(this.editedItem)
-          this.close()
-        } else {
-          await this.editClient(this.editedItem)
-          this.close()
-        }
-      }
     },
 
     myDebugger (something) {
