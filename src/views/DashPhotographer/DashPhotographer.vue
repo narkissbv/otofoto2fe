@@ -85,7 +85,8 @@
                   :key="i"
                   @click="action.action(item)"
                 >
-                  <v-list-item-title>
+                  <component :is="action.component" v-if="action.component" :propData="item" />
+                  <v-list-item-title v-else>
                     <v-icon
                       class="mr-2"
                       :color="action.color"
@@ -114,6 +115,7 @@ import { mapActions, mapGetters } from 'vuex'
 import validationMixin from '@/mixins/validations'
 import { navigateTo } from '@/utils/utils'
 import DialogAddClient from './DialogAddClient'
+import DialogEditClient from './DialogEditClient'
 export default {
   mixins: [validationMixin],
   data () {
@@ -134,7 +136,7 @@ export default {
           value: 'username'
         },
         {
-          text: 'Actions',
+          text: '',
           value: 'actions',
           sortable: false,
         }
@@ -156,6 +158,7 @@ export default {
       ],
       search: '',
       dialogDelete: false,
+      dialogEditClient: false,
       editedIndex: -1,
       editedItem: {
         id: null,
@@ -181,7 +184,8 @@ export default {
         {
           title: 'Edit',
           icon: 'mdi-pencil',
-          action: this.editItem
+          action: this.editItem,
+          component: DialogEditClient,
         },
         {
           title: 'Albums',
@@ -227,6 +231,7 @@ export default {
   },
   components: {
     DialogAddClient,
+    DialogEditClient,
   },
   computed: {
     ...mapGetters({
@@ -283,9 +288,9 @@ export default {
     },
 
     editItem (item) {
-      this.editedIndex = this.clients.indexOf(item)
+      // this.editedIndex = this.clients.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.dialog = true
+      this.dialogEditClient = true
     },
 
     deleteItem (item) {
