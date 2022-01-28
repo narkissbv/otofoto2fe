@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import axios from 'axios'
+import { sendAPI } from '../utils/utils'
+
 import Login from '@/components/LoginPage'
 import Dashboard from '@/components/Dashboard'
 import Albums from '@/components/Albums'
@@ -123,7 +124,7 @@ const router = new VueRouter({
 router.beforeEach( (to, from, next) => {
   if (to.meta.requiresAuth) {
     // check for valid auth token
-    axios.get('/api/otofoto2be/checkAuthToken.php').then(response => {
+    sendAPI('checkAuthToken').then(response => {
       // save user data to the store (in case refresh will clear the store)
       const user = response?.data?.user || null
       store.commit('account/setAuthUser', user)

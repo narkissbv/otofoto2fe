@@ -184,7 +184,7 @@ export default {
         {
           title: 'Edit',
           icon: 'mdi-pencil',
-          action: this.editItem,
+          action: () => {},
           component: DialogEditClient,
         },
         {
@@ -280,18 +280,19 @@ export default {
     ...mapActions({
       fetchClients: 'clients/fetchClients',
       addClient: 'clients/addClient',
-      editClient: 'clients/editClient'
+      editClient: 'clients/editClient',
+      deleteClient: 'clients/delete',
     }),
 
     initialize () {
       this.fetchClients()
     },
 
-    editItem (item) {
-      // this.editedIndex = this.clients.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogEditClient = true
-    },
+    // editItem (item) {
+    //   // this.editedIndex = this.clients.indexOf(item)
+    //   this.editedItem = Object.assign({}, item)
+    //   this.dialogEditClient = true
+    // },
 
     deleteItem (item) {
       this.editedIndex = this.clients.indexOf(item)
@@ -300,6 +301,7 @@ export default {
     },
 
     deleteItemConfirm () {
+      this.deleteClient({clientId: this.editedItem.id})
       this.clients.splice(this.editedIndex, 1)
       this.closeDelete()
     },

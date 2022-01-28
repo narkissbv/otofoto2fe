@@ -8,7 +8,7 @@
       <v-list-item-title
         v-bind="attrs"
         v-on="on"
-        @click="openDialog"
+        class="py-4"
       >
         <v-icon class="mr-2">mdi-pencil</v-icon>
         <span>Edit</span>
@@ -136,9 +136,6 @@ export default {
       this.$refs.editClientForm.resetValidation()
       this.isOpen = false
     },
-    openDialog () {
-      this.isOpen = true
-    }
   },
   mounted () {
     this.editClientTemplate = Object.assign({}, this.propData)

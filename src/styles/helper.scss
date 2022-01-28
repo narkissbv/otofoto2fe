@@ -2,3 +2,39 @@
   width: 100%;
   max-width: 600px;
 }
+$vertical-rythin: 4px;
+// spacing
+// padding
+
+@for $i from 1 through 8 {
+  .pt-#{$i} {
+    padding-top: $vertical-rythin * $i;
+  }
+
+  .pr-#{$i} {
+    padding-right: $vertical-rythin * $i;
+  }
+
+  .pb-#{$i} {
+    padding-bottom: $vertical-rythin * $i;
+  }
+
+  .pl-#{$i} {
+    padding-left: $vertical-rythin * $i;
+  }
+
+  .py-#{$i} {
+    @extend .pt-#{$i};
+    @extend .pb-#{$i};
+  }
+
+  .px-#{$i} {
+    @extend .pr-#{$i};
+    @extend .pl-#{$i};
+  }
+
+  .pi-#{$i} {
+    @extend .py-#{$i};
+    @extend .px-#{$i};
+  }
+}

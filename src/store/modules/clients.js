@@ -1,5 +1,5 @@
-import axios from 'axios'
-import { API_BASE_URL } from '@/utils/utils'
+// import axios from 'axios'
+import { sendAPI } from '@/utils/utils'
 
 export default {
   namespaced: true,
@@ -20,18 +20,12 @@ export default {
   },
   actions: {
     fetchClients ({ commit }) {
-      let url = `${API_BASE_URL}/getClients.php`
-      axios.post(url).then(response => {
+      sendAPI('getClients').then(response => {
         commit('setClients', response?.data?.clients)
       })
     },
     addClient (context, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/addClient.php`
-      axios.post(url, formData).then( (resp) => {
+      sendAPI('addClient', payload).then( (resp) => {
         context.dispatch('fetchClients')
         context.commit('setMessage',
           `${resp.data.message} Username: ${resp.data.data.username} Password: ${resp.data.data.password}`,
@@ -41,17 +35,20 @@ export default {
       })
     },
     editClient ({ commit }, payload) {
-      let formData = new FormData()
-      for (let key in payload) {
-        formData.append(key, payload[key])
-      }
-      let url = `${API_BASE_URL}/editClient.php`
-      axios.post(url, formData).then( (response) => {
+      sendAPI('editClient', payload).then( (response) => {
         commit('updateClient', response.data)
       }, error => {
         commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
     },
+    delete (context, payload) {
+      sendAPI('deleteClient', payload).then( resp => {
+        context.dispatch('fetchClients')
+        context.dispatch('setMessage', resp.data.message, { root: true })
+      }, error => {
+        context.commit('setErrorMessage', error?.response?.data?.message, { root: true })
+      })
+    }
   },
   getters: {
     list(state) {

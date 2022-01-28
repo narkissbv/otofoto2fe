@@ -1,7 +1,9 @@
 import axios from 'axios'
 import router from '../route/router'
+axios.defaults.withCredentials = true
 
-const API_BASE_URL = '/api/otofoto2be'
+// const API_BASE_URL = '/api/otofoto2be'
+const API_BASE_URL = 'https://api.matannarkiss.com'
 
 const sendAPI = (url, payload) => {
   let formData = new FormData()
