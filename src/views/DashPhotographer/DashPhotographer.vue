@@ -131,17 +131,13 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchClients();
   },
 
   methods: {
     ...mapActions({
       fetchClients: "clients/fetchClients",
     }),
-
-    initialize() {
-      this.fetchClients();
-    },
   },
 };
 </script>

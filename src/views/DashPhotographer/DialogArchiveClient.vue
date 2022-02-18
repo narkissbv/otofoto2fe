@@ -1,28 +1,27 @@
 <template>
   <v-dialog v-model="isOpen" max-width="500px">
     <template v-slot:activator="{ on, attrs }">
-      <v-list-item-title v-bind="attrs" v-on="on" class="py-4">
-        <v-icon class="mr-2" color="error">mdi-archive</v-icon>
-        <span>Archive</span>
-      </v-list-item-title>
+      <v-list-item v-bind="attrs" v-on="on" :key="key">
+        <v-list-item-title class="error--text">
+          <v-icon class="mr-2" color="error">mdi-archive</v-icon>
+          <span>Archive</span>
+        </v-list-item-title>
+      </v-list-item>
     </template>
     <v-card>
-      <v-card-title class="headline justify-center text-center">
-        Are you sure you want to archive
-        <br>{{ client.name }}?
+      <v-card-title class="headline justify-center text-center text-break mb-2">
+        Are you sure you want to archive {{ client.name }}?
       </v-card-title>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
+      <v-card-text class="text-center">
+        <v-icon class="mr-1" color="warning">mdi-alert</v-icon>
+        Archived clients are deleted after 6 months
+      </v-card-text>
+
+      <v-card-actions class="justify-end">
         <v-btn color="gray" text @click="closeDialog">Cancel</v-btn>
         <v-btn color="primary" @click="confirm">OK</v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
-      <v-spacer></v-spacer>
-      <v-list-item-subtitle class="error--text">
-         Archived clients are deleted after 6 months
-      </v-list-item-subtitle>
-      <v-spacer></v-spacer>
     </v-card>
   </v-dialog>
 </template>
@@ -37,6 +36,9 @@ export default {
   },
   props: {
     client: {
+      required: true,
+    },
+    key: {
       required: true,
     },
   },

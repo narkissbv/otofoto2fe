@@ -15,7 +15,7 @@ const vuetify = new Vuetify({
         secondary: colors.grey.darken1,
         accent: colors.purple.lighten5,
         error: colors.red.accent3,
-        warning: colors.pink.lighten5,
+        warning: colors.yellow.lighten5,
         galleryIcons: '#fff',
         success: colors.green.lighten2,
         info: '#f4e7ff'
@@ -25,7 +25,7 @@ const vuetify = new Vuetify({
         secondary: colors.grey.darken1,
         accent: colors.purple.darken4,
         error: colors.red.accent1,
-        warning: '#421b30',
+        warning: '#ffff00',
         galleryIcons: '#fff',
         success: colors.green.base,
         info: '#4d3452'

@@ -1,10 +1,12 @@
 <template>
   <v-dialog v-model="isOpen" max-width="500px">
     <template v-slot:activator="{ on, attrs }">
-      <v-list-item-title v-bind="attrs" v-on="on" class="py-4">
-        <v-icon class="mr-2">mdi-pencil</v-icon>
-        <span>Edit</span>
-      </v-list-item-title>
+      <v-list-item v-bind="attrs" v-on="on" key>
+        <v-list-item-title>
+          <v-icon class="mr-2">mdi-pencil</v-icon>
+          <span>Edit</span>
+        </v-list-item-title>
+      </v-list-item>
     </template>
     <v-card>
       <v-form v-model="editClientFormValid" @submit="save" ref="editClientForm">
@@ -83,6 +85,9 @@ export default {
   },
   props: {
     client: {
+      required: true,
+    },
+    key: {
       required: true,
     },
   },

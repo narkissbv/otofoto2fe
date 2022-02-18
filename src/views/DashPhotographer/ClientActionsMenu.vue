@@ -7,31 +7,28 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item
-          v-for="(action, i) in actions"
-          :key="i"
-          @click="action.action(client)"
-        >
+        <template v-for="(action, i) in actions">
           <component
-            :is="action.component"
-            v-if="action.component"
-            :client="client"
-          />
-          <v-list-item-title v-else>
-            <v-icon class="mr-2" :color="action.color">
-              {{ action.icon }}
-            </v-icon>
-            <span :class="`${action.color}--text`">
-              {{ action.title }}
-            </span>
-          </v-list-item-title>
-        </v-list-item>
+              :is="action.component"
+              v-if="action.component"
+              :client="client"
+              :key="i"
+            />
+          <v-list-item v-else :key="i" @click="action.action(client)">
+            <v-list-item-title>
+              <v-icon class="mr-2" :color="action.color">
+                {{ action.icon }}
+              </v-icon>
+              <span :class="`${action.color}--text`">
+                {{ action.title }}
+              </span>
+            </v-list-item-title>
+          </v-list-item>
+        </template>
       </v-list>
     </v-menu>
   </div>
 </template>
-
-
 
 
 <script>
@@ -44,7 +41,6 @@ export default {
     return {
       actions: [
         {
-          action: () => {}, // unneeded, empty action
           component: DialogEditClient,
         },
         {
@@ -84,7 +80,6 @@ export default {
           action: () => {},
         },
         {
-          action: () => {},
           component: DialogArchiveClient,
         },
       ],
@@ -92,7 +87,7 @@ export default {
   },
   components: {
     DialogEditClient,
-    DialogArchiveClient
+    DialogArchiveClient,
   },
 };
 </script>
