@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" max-width="500px">
     <template v-slot:activator="{ on, attrs }">
-      <v-list-item v-bind="attrs" v-on="on" key>
+      <v-list-item v-bind="attrs" v-on="on">
         <v-list-item-title>
           <v-icon class="mr-2">mdi-pencil</v-icon>
           <span>Edit</span>
@@ -85,9 +85,6 @@ export default {
   },
   props: {
     client: {
-      required: true,
-    },
-    key: {
       required: true,
     },
   },

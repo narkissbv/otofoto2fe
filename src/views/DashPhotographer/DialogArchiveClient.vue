@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" max-width="500px">
     <template v-slot:activator="{ on, attrs }">
-      <v-list-item v-bind="attrs" v-on="on" :key="key">
+      <v-list-item v-bind="attrs" v-on="on">
         <v-list-item-title class="error--text">
           <v-icon class="mr-2" color="error">mdi-archive</v-icon>
           <span>Archive</span>
@@ -36,9 +36,6 @@ export default {
   },
   props: {
     client: {
-      required: true,
-    },
-    key: {
       required: true,
     },
   },

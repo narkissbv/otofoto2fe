@@ -13,6 +13,7 @@
               v-if="action.component"
               :client="client"
               :key="i"
+              
             />
           <v-list-item v-else :key="i" @click="action.action(client)">
             <v-list-item-title>
