@@ -1,5 +1,4 @@
 <template>
-  <!-- Add / Edit client dialog -->
   <v-dialog
     v-model="isOpen"
     max-width="500px"

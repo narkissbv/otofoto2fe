@@ -41,7 +41,7 @@ export default {
         commit('setErrorMessage', error?.response?.data?.message, { root: true })
       })
     },
-    delete (context, payload) {
+    archiveClient (context, payload) {
       sendAPI('deleteClient', payload).then( resp => {
         context.dispatch('fetchClients')
         context.dispatch('setMessage', resp.data.message, { root: true })
