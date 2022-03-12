@@ -1,144 +1,147 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import { sendAPI } from '../utils/utils'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import { sendAPI } from "../utils/utils";
 
-import Login from '@/components/LoginPage'
-import Dashboard from '@/components/Dashboard'
-import Albums from '@/components/Albums'
-import Upload from '@/components/Upload'
+import Login from "@/components/LoginPage";
+import Dashboard from "@/components/Dashboard";
+// import Albums from "@/components/Albums";
+import Albums from "../views/Albums/Albums";
+import Upload from "@/components/Upload";
 // import Photos from '@/components/Photos'
-import Signup from '@/components/Signup'
-import AlbumSelect from '@/components/AlbumSelect'
+import Signup from "@/components/Signup";
+import AlbumSelect from "@/components/AlbumSelect";
+// '@/views/DashPhotographer/DashPhotographer'
+import store from "@/store/store";
 
-import store from '@/store/store'
-
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: Login },
+    { path: "/", component: Login },
     {
-      name: 'login',
-      path: '/login',
-      component: Login
+      name: "login",
+      path: "/login",
+      component: Login,
     },
     {
-      name: 'signup',
-      path: '/signup',
-      component: Signup
+      name: "signup",
+      path: "/signup",
+      component: Signup,
     },
     {
-      name: 'dashboard',
-      path: '/dashboard',
+      name: "dashboard",
+      path: "/dashboard",
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
       },
       component: Dashboard,
     },
     {
-      name: 'albums',
-      path: '/albums/:id',
+      name: "albums",
+      path: "/albums/:id",
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
       },
       component: Albums,
-      props: route => ({
+      props: (route) => ({
         clientId: route.params.id,
       }),
     },
     {
-      name: 'shared',
-      path: '/shared:slug',
-      component: Albums
+      name: "shared",
+      path: "/shared:slug",
+      component: Albums,
     },
     {
-      name: 'upload',
-      path: '/upload/:id',
+      name: "upload",
+      path: "/upload/:id",
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
       },
       component: Upload,
-      props: route => ({
+      props: (route) => ({
         clientId: route.params.id,
-        clientName: route.params.name
-      })
+        clientName: route.params.name,
+      }),
     },
     {
-      name: 'photos',
-      path: '/photos/',
+      name: "photos",
+      path: "/photos/",
       meta: {
         requiresAuth: true,
       },
       component: AlbumSelect,
       children: [
         {
-          name: 'photosByAlbum',
-          path: 'album/:id',
+          name: "photosByAlbum",
+          path: "album/:id",
           component: AlbumSelect,
           meta: {
-            type: 'album',
+            type: "album",
             requiresAuth: true,
-          }
+          },
         },
         {
-          name: 'photosByClient',
-          path: 'client/:id',
+          name: "photosByClient",
+          path: "client/:id",
           component: AlbumSelect,
           meta: {
-            action: 'delete',
-            type: 'client',
+            action: "delete",
+            type: "client",
             requiresAuth: true,
-          }
-        }
+          },
+        },
       ],
     },
     {
-      name: 'albumSelect',
-      path: '/select/:id',
+      name: "albumSelect",
+      path: "/select/:id",
       meta: {
         requiresAuth: true,
-        action: 'select',
-        type: 'album',
+        action: "select",
+        type: "album",
       },
       component: AlbumSelect,
-      props: route => ({
+      props: (route) => ({
         albumId: route.params.id,
-      })
+      }),
     },
     {
-      name: 'albumView',
-      path: '/view/:id',
+      name: "albumView",
+      path: "/view/:id",
       meta: {
         requiresAuth: true,
-        action: 'view',
-        type: 'album',
+        action: "view",
+        type: "album",
       },
       component: AlbumSelect,
-      props: route => ({
+      props: (route) => ({
         albumId: route.params.id,
-      })
-    }
-  ]
-})
+      }),
+    },
+  ],
+});
 
-router.beforeEach( (to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     // check for valid auth token
-    sendAPI('checkAuthToken').then(response => {
-      // save user data to the store (in case refresh will clear the store)
-      const user = response?.data?.user || null
-      store.commit('account/setAuthUser', user)
-      // Token is valid, so continue
-      next()
-    }).catch( ()  => {
-      // There was an error so redirect
-      store.commit('account/logout')
-      next({
-        path: '/login'
+    sendAPI("checkAuthToken")
+      .then((response) => {
+        // save user data to the store (in case refresh will clear the store)
+        const user = response?.data?.user || null;
+        store.commit("account/setAuthUser", user);
+        // Token is valid, so continue
+        next();
       })
-    })
+      .catch(() => {
+        // There was an error so redirect
+        store.commit("account/logout");
+        next({
+          path: "/login",
+        });
+      });
   } else {
-    next()
+    next();
   }
-})
-export default router
+});
+export default router;
