@@ -3,7 +3,7 @@ import router from '../route/router'
 axios.defaults.withCredentials = true
 
 // const API_BASE_URL = '/api/otofoto2be'
-const API_BASE_URL = 'https://api.matannarkiss.com'
+const API_BASE_URL = 'https://stg.otofo.to/api'
 
 const sendAPI = (url, payload) => {
   let formData = new FormData()
@@ -20,7 +20,7 @@ const navigateTo = (name, params) => {
 const getImageSrc = (url) => {
     return window.location.hostname === 'localhost' ?
     `http://localhost/otofoto2be/${url}` :
-    `${window.location.origin}/${url}`
+    `${API_BASE_URL}/${url}`
 }
 
 export {
