@@ -28,8 +28,7 @@ export default {
           url: `${API_BASE_URL}/upload.php`,
           thumbnailWidth: 150,
           maxFilesize: 1.5,
-          acceptedFiles: 'image/jpeg',
-          headers: { "My-Awesome-Header": "header value" }
+          acceptedFiles: 'image/jpeg'
       }
     }
   },
