@@ -21,7 +21,7 @@ const getImageSrc = (url) => {
     // return window.location.hostname === 'localhost' ?
     // `http://localhost/otofoto2be/${url}` :
     // `${window.location.origin}/${url}`
-    return `${window.location.origin}/${url}`
+    return `${API_BASE_URL}/${url}`
 }
 
 export {
