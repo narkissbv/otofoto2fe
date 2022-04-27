@@ -5,7 +5,7 @@
       <h3>Sign in to the system to start your work</h3>
       <v-form v-model="valid"
               ref="loginForm"
-              @submit="doLogin">
+              @submit.prevent="doLogin">
         <v-row wrap>
           <v-col cols="12">
             <v-text-field
